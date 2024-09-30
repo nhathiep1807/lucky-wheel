@@ -27,8 +27,9 @@ export default function EnergyRing({
     >
       <defs>
         <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#00ff00" />
-          <stop offset="100%" stopColor="#ff0000" />
+          <stop offset="0%" stopColor="#fa52db" />
+          <stop offset="50%" stopColor="#52faf7" />
+          <stop offset="100%" stopColor="#00ff00" />
         </linearGradient>
       </defs>
       <circle
@@ -37,7 +38,7 @@ export default function EnergyRing({
         r="45"
         fill="none"
         stroke="#e5e5e5"
-        strokeWidth="1"
+        strokeWidth="2"
       />
       {isHolding && (
         <circle
@@ -46,7 +47,7 @@ export default function EnergyRing({
           r="45"
           fill="none"
           stroke="url(#ringGradient)"
-          strokeWidth="1"
+          strokeWidth="2"
           strokeLinecap="round"
           strokeDasharray={strokeDasharray}
           strokeDashoffset={strokeDashoffset}
