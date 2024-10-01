@@ -168,6 +168,11 @@ const BaseWheel: React.FC = () => {
             handleMouseUp();
             handleSpin();
           }}
+          onTouchStart={handleMouseDown}
+          onTouchEnd={() => {
+            handleMouseUp();
+            handleSpin();
+          }}
           disabled={isSpinning}
           className="absolute flex items-center justify-center w-10 h-10 p-4 px-5 py-3 overflow-hidden font-bold text-indigo-600 -translate-x-1/2 bg-white rounded-full shadow-2xl group md:w-16 md:h-16 lg:w-32 lg:h-32 left-1/2"
         >
