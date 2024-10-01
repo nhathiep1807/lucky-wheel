@@ -174,7 +174,7 @@ const BaseWheel: React.FC = () => {
             handleSpin();
           }}
           disabled={isSpinning}
-          className="absolute flex items-center justify-center w-10 h-10 p-4 px-5 py-3 overflow-hidden font-bold text-indigo-600 -translate-x-1/2 bg-white rounded-full shadow-2xl group md:w-16 md:h-16 lg:w-32 lg:h-32 left-1/2"
+          className="absolute flex items-center justify-center w-10 h-10 p-4 px-5 py-3 overflow-hidden font-bold text-indigo-600 -translate-x-1/2 -translate-y-1/2 bg-white rounded-full shadow-2xl top-1/2 group md:w-16 md:h-16 lg:w-32 lg:h-32 left-1/2"
         >
           <span className="absolute top-0 left-0 w-40 h-40 -mt-10 -ml-3 transition-all duration-700 bg-red-500 rounded-full blur-md ease"></span>
           <span className="absolute inset-0 w-full h-full transition duration-700 group-hover:rotate-180 ease">
