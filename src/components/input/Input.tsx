@@ -4,7 +4,7 @@ import classcat from "classcat";
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: string;
     name?: string;
-    register?: any;
+    register?: unknown;
     placeholder?: string;
     error?: string;
 }

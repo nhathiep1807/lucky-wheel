@@ -32,6 +32,7 @@ const EditableText = ({ initialText }: EditAbleProps) => {
 
     const handleSave = () => {
         setIsEditing(false);
+        setText('abc')
     };
 
     return (
@@ -39,7 +40,7 @@ const EditableText = ({ initialText }: EditAbleProps) => {
             {isEditing ? (
                 <form>
                     <Input
-                        value='asdfdfdf'
+                        value={initialText}
                         name="rule"
                         type="text"
                         placeholder="Input your rules"
