@@ -46,7 +46,7 @@ const BaseWheel: React.FC = () => {
     const spinner = spinnerRef.current;
     if (!spinner) return;
 
-    prizes.forEach(({ text, color }, i) => {
+    prizes.forEach(({ text }, i) => {
       const rotation = prizeSlice * i * -1 - prizeOffset;
       spinner.insertAdjacentHTML(
         "beforeend",
