@@ -20,7 +20,7 @@ type LoginForm = z.infer<typeof LoginSchema>;
 
 function Login() {
     const router = useRouter();
-    const { mutate: login, isPending } = useLogin()
+    const { isPending } = useLogin()
 
     const { handleSubmit, register, formState } = useForm<LoginForm>({
         defaultValues: {
@@ -30,7 +30,7 @@ function Login() {
         resolver: zodResolver(LoginSchema),
     });
 
-    const onSubmit = (data: LoginForm) => {
+    const onSubmit = () => {
         router.push(PATH.home);
         // login(data, {
         //     onSuccess: (data) => {

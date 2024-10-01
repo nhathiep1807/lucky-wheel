@@ -2,7 +2,6 @@
 
 import BaseWheel from "./BaseWheel";
 import { useTrackTime } from "@/hooks/useTrackTime";
-import { useState } from "react";
 import { AdminBoard } from "./admin-board";
 import { Drawer } from "./drawer";
 import EnergyRing from "./EnergyRing";
