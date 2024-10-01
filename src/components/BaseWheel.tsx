@@ -114,7 +114,7 @@ const BaseWheel: React.FC = () => {
     setIsSpinning(true);
     const newRotation =
       rotation +
-      Math.floor(((holdTime * 2) / 1000) * 360 + spinertia(2000, 5000));
+      Math.floor(((holdTime * 3) / 1000) * 360 + spinertia(2000, 5000));
 
     setRotation(newRotation);
     if (tickerRef.current) {
@@ -156,7 +156,7 @@ const BaseWheel: React.FC = () => {
           style={{
             transform: `rotate(${rotation}deg)`,
             transition: isSpinning
-              ? "transform 5s cubic-bezier(0.25, 0.1, 0.25, 1)"
+              ? `transform ${3 + rotation / 1000}s cubic-bezier(.05,.99,.66,1)`
               : "none",
           }}
           onTransitionEnd={handleTransitionEnd}

@@ -139,7 +139,7 @@ body {
 
 @keyframes tick {
   40% {
-    transform: rotate(-12deg);
+    transform: rotate(-15deg);
   }
 }
 
