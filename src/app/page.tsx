@@ -1,5 +1,5 @@
 import Wheel from "@/components/Wheel";
-import background from "@/assets/background.jpg";
+// import background from "@/assets/background.jpg";
 
 export default function Home() {
   return (

@@ -32,13 +32,13 @@ function Login() {
 
     const onSubmit = (data: LoginForm) => {
         router.push(PATH.home);
-        login(data, {
-            onSuccess: (data) => {
+        // login(data, {
+        //     onSuccess: (data) => {
 
-            },
-            onError: (error: any) => {
-            },
-        });
+        //     },
+        //     onError: (error: any) => {
+        //     },
+        // });
     };
 
     return (
