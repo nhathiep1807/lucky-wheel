@@ -181,7 +181,7 @@ const BaseWheel: React.FC = () => {
             <span className="absolute bottom-0 left-0 w-24 h-24 -ml-10 bg-purple-500 rounded-full blur-md"></span>
             <span className="absolute bottom-0 right-0 w-24 h-24 -mr-10 bg-pink-500 rounded-full blur-md"></span>
           </span>
-          <span className="relative text-white">
+          <span className="relative text-white select-none">
             {isHolding ? "Release" : "Spin"}
           </span>
         </button>
