@@ -2,19 +2,14 @@
 
 import BaseWheel from "./BaseWheel";
 import { useTrackTime } from "@/hooks/useTrackTime";
-import { useState } from "react";
 import { AdminBoard } from "./admin-board";
 import { Drawer } from "./drawer";
 import EnergyRing from "./EnergyRing";
 
 export default function Wheel() {
-  const [isOpenDrawer, setIsOpenDrawer] = useState<boolean>(true)
   const { holdTime, isHolding, handleMouseDown, handleMouseUp } =
     useTrackTime();
 
-  const handleCloseDrawer = () => {
-    setIsOpenDrawer(!isOpenDrawer)
-  }
   return (
     <div>
       <Drawer>

@@ -20,7 +20,7 @@ const DynamicInput = () => {
     //     setItems(updatedItems);
     // };
 
-    const saveItem = (index: number) => {
+    const saveItem = () => {
         const updatedItems = [...items];
         setItems(updatedItems);
     };
@@ -48,7 +48,7 @@ const DynamicInput = () => {
                         placeholder='Input Value'
                     />
                     <div className='flex items-center justify-center'>
-                        <button type="button" onClick={() => saveItem(index)}>
+                        <button type="button" onClick={saveItem}>
                             <CheckCircleIcon className="text-black w-5 h-5" />
                         </button>
 

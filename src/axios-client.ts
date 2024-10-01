@@ -13,18 +13,18 @@ const axiosClient = axios.create({
 
 // Interceptors
 // Add a request interceptor
-axiosClient.interceptors.request.use(
-    (config) => {
-        const accessToken = cookie.get(ACCESS_TOKEN);
+// axiosClient.interceptors.request.use(
+//     (config) => {
+//         const accessToken = cookie.get(ACCESS_TOKEN);
 
-        if (accessToken) {
-            config.headers["Authorization"] = `Bearer ${accessToken}`;
-        }
+//         if (accessToken) {
+//             config.headers["Authorization"] = `Bearer ${accessToken}`;
+//         }
 
-        return config;
-    },
-    (error) => Promise.reject(error)
-);
+//         return config;
+//     },
+//     (error) => Promise.reject(error)
+// );
 
 // Add a response interceptor
 axiosClient.interceptors.response.use(
