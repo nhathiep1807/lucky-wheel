@@ -1,3 +1,4 @@
+import QueryProvider from "@/provider/query-provider";
 import type { Metadata } from "next";
 import { Fredoka } from "next/font/google";
 
@@ -16,7 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${fredoka.className} antialiased`}>{children}</body>
+      <QueryProvider>
+        <body className={`${fredoka.className} antialiased`}>{children}</body>
+      </QueryProvider>
     </html>
   );
 }

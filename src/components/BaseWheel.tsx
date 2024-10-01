@@ -66,11 +66,11 @@ const BaseWheel: React.FC = () => {
       `background: conic-gradient(
         from -90deg,
         ${prizes
-          .map(
-            ({ color }, i) =>
-              `${color} 0 ${(100 / prizes.length) * (prizes.length - i)}%`
-          )
-          .reverse()}
+        .map(
+          ({ color }, i) =>
+            `${color} 0 ${(100 / prizes.length) * (prizes.length - i)}%`
+        )
+        .reverse()}
       );`
     );
   };
