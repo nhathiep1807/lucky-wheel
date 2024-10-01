@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "./style.css";
 import { twMerge } from "tailwind-merge";
 import { useTrackTime } from "@/hooks/useTrackTime";
+import EnergyBar from "./EnergyBar";
 
 interface Prize {
   text: string;
@@ -147,30 +148,40 @@ const BaseWheel: React.FC = () => {
   }, [isSpinning]);
 
   return (
-    <div className={twMerge("deal-wheel", isSpinning && "is-spinning")}>
-      <ul
-        className="spinner"
-        ref={spinnerRef}
-        style={{
-          transform: `rotate(${rotation}deg)`,
-          transition: isSpinning
-            ? "transform 5s cubic-bezier(0.25, 0.1, 0.25, 1)"
-            : "none",
-        }}
-        onTransitionEnd={handleTransitionEnd}
-      ></ul>
-      <div className="ticker" ref={tickerRef}></div>
-      <button
-        className="absolute flex items-center justify-center w-32 h-32 font-bold -translate-x-1/2 bg-white border-2 border-black rounded-full left-1/2"
-        onMouseDown={handleMouseDown}
-        onMouseUp={() => {
-          handleMouseUp();
-          handleSpin();
-        }}
-        disabled={isSpinning}
-      >
-        {isHolding ? "Release" : "Spin"}
-      </button>
+    <div className="flex">
+      <div className={twMerge("deal-wheel", isSpinning && "is-spinning")}>
+        <ul
+          className="spinner"
+          ref={spinnerRef}
+          style={{
+            transform: `rotate(${rotation}deg)`,
+            transition: isSpinning
+              ? "transform 5s cubic-bezier(0.25, 0.1, 0.25, 1)"
+              : "none",
+          }}
+          onTransitionEnd={handleTransitionEnd}
+        ></ul>
+        <div className="ticker" ref={tickerRef}></div>
+        <button
+          onMouseDown={handleMouseDown}
+          onMouseUp={() => {
+            handleMouseUp();
+            handleSpin();
+          }}
+          disabled={isSpinning}
+          className="absolute flex items-center justify-center w-10 h-10 p-4 px-5 py-3 overflow-hidden font-bold text-indigo-600 -translate-x-1/2 bg-white rounded-full shadow-2xl group md:w-16 md:h-16 lg:w-32 lg:h-32 left-1/2"
+        >
+          <span className="absolute top-0 left-0 w-40 h-40 -mt-10 -ml-3 transition-all duration-700 bg-red-500 rounded-full blur-md ease"></span>
+          <span className="absolute inset-0 w-full h-full transition duration-700 group-hover:rotate-180 ease">
+            <span className="absolute bottom-0 left-0 w-24 h-24 -ml-10 bg-purple-500 rounded-full blur-md"></span>
+            <span className="absolute bottom-0 right-0 w-24 h-24 -mr-10 bg-pink-500 rounded-full blur-md"></span>
+          </span>
+          <span className="relative text-white">
+            {isHolding ? "Release" : "Spin"}
+          </span>
+        </button>
+      </div>
+      <EnergyBar value={holdTime} />
     </div>
   );
 };
