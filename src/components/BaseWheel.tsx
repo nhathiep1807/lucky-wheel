@@ -8,17 +8,19 @@ import EnergyRing from "./EnergyRing";
 interface Prize {
   text: string;
   color: string;
+  angle: number;
 }
 
 const prizes: Prize[] = [
-  { text: "10% Off Sticker Price", color: "hsl(197 30% 43%)" },
-  { text: "Free Car", color: "hsl(173 58% 39%)" },
-  { text: "No Money Down", color: "hsl(43 74% 66%)" },
-  { text: "Half Off Sticker Price", color: "hsl(27 87% 67%)" },
-  { text: "Free DIY Carwash", color: "hsl(12 76% 61%)" },
-  { text: "Eternal Damnation", color: "hsl(350 60% 52%)" },
-  { text: "Used Travel Mug", color: "hsl(91 43% 54%)" },
-  { text: "One Solid Hug", color: "hsl(140 36% 74%)" },
+  { text: "10% Off Sticker Price", color: "hsl(197 30% 43%)", angle: 30 }, //34.8deg
+  { text: "No Money Down", color: "hsl(43 74% 66%)", angle: 40 },
+  { text: "Half Off Sticker Price", color: "hsl(27 87% 67%)", angle: 40 },
+  { text: "Free DIY Carwash", color: "hsl(12 76% 61%)", angle: 40 },
+  { text: "Free Car", color: "hsl(173 58% 39%)", angle: 30 },
+  { text: "Eternal Damnation", color: "hsl(350 60% 52%)", angle: 60 },
+  { text: "Used Travel Mug", color: "hsl(91 43% 54%)", angle: 60 },
+  { text: "One Solid Hug", color: "hsl(140 11% 74%)", angle: 20 },
+  // { text: "10 percent", color: "hsl(56 40% 67%)", angle: 10 },
 ];
 
 const BaseWheel: React.FC = () => {
@@ -32,8 +34,7 @@ const BaseWheel: React.FC = () => {
   const animationFrameRef = useRef<number | null>(null);
   let currentSlice = 0;
 
-  const prizeSlice = 360 / prizes.length;
-  const prizeOffset = Math.floor(180 / prizes.length);
+  const totalAngle = prizes.reduce((sum, prize) => sum + prize.angle, 0);
 
   const spinertia = (min: number, max: number) =>
     Math.floor(((holdTime * 2) / 1000) * (max - min + 1)) + min;
@@ -43,41 +44,8 @@ const BaseWheel: React.FC = () => {
     createPrizeNodes();
   };
 
-  const createPrizeNodes = () => {
-    const spinner = spinnerRef.current;
-    if (!spinner) return;
-
-    prizes.forEach(({ text }, i) => {
-      const rotation = prizeSlice * i * -1 - prizeOffset;
-      spinner.insertAdjacentHTML(
-        "beforeend",
-        `<li class="prize" style="--rotate: ${rotation}deg">
-          <span class="text">${text}</span>
-        </li>`
-      );
-    });
-  };
-
-  const createConicGradient = () => {
-    const spinner = spinnerRef.current;
-    if (!spinner) return;
-
-    spinner.setAttribute(
-      "style",
-      `background: conic-gradient(
-        from -90deg,
-        ${prizes
-          .map(
-            ({ color }, i) =>
-              `${color} 0 ${(100 / prizes.length) * (prizes.length - i)}%`
-          )
-          .reverse()}
-      );`
-    );
-  };
-
-  const runTickerAnimation = () => {
-    if (!spinnerRef.current) return;
+  const getCurrentPrize = () => {
+    if (!spinnerRef.current) return null;
 
     const spinnerStyles = window.getComputedStyle(spinnerRef.current);
     const values = spinnerStyles.transform
@@ -89,10 +57,62 @@ const BaseWheel: React.FC = () => {
     let rad = Math.atan2(b, a);
     if (rad < 0) rad += 2 * Math.PI;
 
-    const angle = Math.round(rad * (180 / Math.PI));
-    const slice = Math.floor(angle / prizeSlice);
+    const angle = (rad * (180 / Math.PI) + 90) % 360;
 
-    if (currentSlice !== slice) {
+    let accumulatedAngle = 0;
+    for (let i = 0; i < prizes.length; i++) {
+      accumulatedAngle += prizes[i].angle;
+      if (angle < accumulatedAngle) {
+        return prizes[i];
+      }
+    }
+    return prizes[prizes.length - 1];
+  };
+
+  const createPrizeNodes = () => {
+    const spinner = spinnerRef.current;
+    if (!spinner) return;
+
+    let currentRotation = 0;
+    prizes.forEach(({ text, angle }) => {
+      const realityAngle = (angle * 360) / totalAngle;
+      const rotation = realityAngle / 2 + currentRotation;
+
+      spinner.insertAdjacentHTML(
+        "beforeend",
+        `<li class="prize" style="--rotate: ${rotation}deg">
+          <span class="text">${text}</span>
+        </li>`
+      );
+      currentRotation += realityAngle;
+    });
+  };
+
+  const createConicGradient = () => {
+    const spinner = spinnerRef.current;
+    if (!spinner) return;
+
+    let gradientString = "conic-gradient(from -90deg,";
+    let currentAngle = 0;
+
+    prizes.forEach(({ color, angle }, index) => {
+      const startAngle = currentAngle;
+      const endAngle = currentAngle + (angle * 360) / totalAngle;
+      gradientString += `${color} ${startAngle}deg ${endAngle}deg${
+        index < prizes.length - 1 ? "," : ")"
+      }`;
+      currentAngle = endAngle;
+    });
+
+    spinner.setAttribute("style", `background: ${gradientString};`);
+  };
+
+  const runTickerAnimation = () => {
+    if (!spinnerRef.current) return;
+
+    const currentPrize = getCurrentPrize();
+
+    if (currentPrize && currentSlice !== prizes.indexOf(currentPrize)) {
       if (tickerRef.current) {
         tickerRef.current.style.animation = "none";
         setTimeout(() => {
@@ -101,7 +121,7 @@ const BaseWheel: React.FC = () => {
           }
         }, 1);
       }
-      currentSlice = slice;
+      currentSlice = prizes.indexOf(currentPrize);
     }
 
     if (isSpinning) {
