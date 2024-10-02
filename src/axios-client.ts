@@ -1,9 +1,8 @@
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import cookie from "./utils/cookie";
 import { ACCESS_TOKEN } from "./constants/common";
 
 const axiosClient = axios.create({
-    // TODO: base url goes here
     baseURL: process.env.NEXT_PUBLIC_API_URL,
     headers: {
         Accept: "application/json",
@@ -11,22 +10,23 @@ const axiosClient = axios.create({
     },
 });
 
-// Interceptors
-// Add a request interceptor
-// axiosClient.interceptors.request.use(
-//     (config) => {
-//         const accessToken = cookie.get(ACCESS_TOKEN);
+axiosClient.interceptors.request.use(
+    (config: AxiosRequestConfig) => {
+        const accessToken = cookie.get(ACCESS_TOKEN);
 
-//         if (accessToken) {
-//             config.headers["Authorization"] = `Bearer ${accessToken}`;
-//         }
+        if (accessToken) {
+            if (config.headers) {
+                config.headers["Authorization"] = `Bearer ${accessToken}`;
+            } else {
+                config.headers = { Authorization: `Bearer ${accessToken}` };
+            }
+        }
 
-//         return config;
-//     },
-//     (error) => Promise.reject(error)
-// );
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
 
-// Add a response interceptor
 axiosClient.interceptors.response.use(
     (response) => response.data,
     (error: AxiosError) => {

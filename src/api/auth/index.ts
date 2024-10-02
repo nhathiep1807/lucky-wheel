@@ -1,8 +1,9 @@
 import axiosClient from "@/axios-client";
-import { TLoginRequest } from "@/types/auth";
+import { TLoginRequest, TLoginResponse } from "@/types/auth";
+import { TBaseResponse } from "@/types/common";
 
 const authApi = {
-    login: (data: TLoginRequest): Promise<unknown> =>
+    login: (data: TLoginRequest): Promise<TBaseResponse<TLoginResponse>> =>
         axiosClient.post("/auth/login", data),
 };
 

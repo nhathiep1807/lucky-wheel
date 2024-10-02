@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useContext } from 'react'
 import { Button } from '@/components/button'
 import { Input } from '@/components/input'
 import { useLogin } from '@/hooks/useLogin';
@@ -9,10 +9,14 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PATH from '@/constants/path';
+import { GlobalContext } from '../context';
+import { TypeErrorResponse } from '@/types/common';
+import cookie from '@/utils/cookie';
+import { ACCESS_TOKEN } from '@/constants/common';
 
 
 const LoginSchema = z.object({
-    userName: z.string().min(1, "User Name must be at least 1 characters"),
+    phoneNumber: z.string().min(1, "User Name must be at least 1 characters"),
     password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
@@ -20,25 +24,30 @@ type LoginForm = z.infer<typeof LoginSchema>;
 
 function Login() {
     const router = useRouter();
-    const { isPending } = useLogin()
+    const { setIsAuthenticated, setUserInfo } = useContext(GlobalContext);
+    const { mutate: login, isPending } = useLogin()
 
     const { handleSubmit, register, formState } = useForm<LoginForm>({
         defaultValues: {
-            userName: "",
+            phoneNumber: "",
             password: "",
         },
         resolver: zodResolver(LoginSchema),
     });
 
-    const onSubmit = () => {
-        router.push(PATH.home);
-        // login(data, {
-        //     onSuccess: (data) => {
-
-        //     },
-        //     onError: (error: any) => {
-        //     },
-        // });
+    const onSubmit = (data: LoginForm) => {
+        login(data, {
+            onSuccess: (data) => {
+                cookie.set(ACCESS_TOKEN, data.data?.access_token);
+                setIsAuthenticated(true);
+                setUserInfo(data.data.user);
+                router.push(PATH.home);
+            },
+            onError: (error: any) => {
+                const _error: TypeErrorResponse = error;
+                console.log('error!', error)
+            },
+        });
     };
 
     return (
@@ -51,12 +60,12 @@ function Login() {
 
                     <form className="mt-6 grid gap-4">
                         <Input
-                            label="Username"
-                            name="userName"
+                            label="Phone Number"
+                            name="phoneNumber"
                             type="text"
-                            placeholder="User Name"
+                            placeholder="Phone Number"
                             register={register}
-                            error={formState.errors.userName?.message}
+                            error={formState.errors.phoneNumber?.message}
                         />
                         <Input
                             label="Password"
