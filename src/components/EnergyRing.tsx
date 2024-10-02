@@ -15,7 +15,7 @@ export default function EnergyRing({
   className,
 }: EnergyRingProps) {
   const progress = Math.min(holdTime / maxHoldTime, 1);
-  const strokeDasharray = 2 * Math.PI * 45;
+  const strokeDasharray = 2 * Math.PI * 49;
   const strokeDashoffset = strokeDasharray * (1 - progress);
 
   return (
@@ -35,7 +35,7 @@ export default function EnergyRing({
       <circle
         cx="50"
         cy="50"
-        r="45"
+        r="49"
         fill="none"
         stroke="#e5e5e5"
         strokeWidth="2"
@@ -44,7 +44,7 @@ export default function EnergyRing({
         <circle
           cx="50"
           cy="50"
-          r="45"
+          r="49"
           fill="none"
           stroke="url(#ringGradient)"
           strokeWidth="2"

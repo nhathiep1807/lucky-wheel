@@ -3,6 +3,7 @@ import "./style.css";
 import { twMerge } from "tailwind-merge";
 import { useTrackTime } from "@/hooks/useTrackTime";
 import EnergyBar from "./EnergyBar";
+import EnergyRing from "./EnergyRing";
 
 interface Prize {
   text: string;
@@ -66,11 +67,11 @@ const BaseWheel: React.FC = () => {
       `background: conic-gradient(
         from -90deg,
         ${prizes
-        .map(
-          ({ color }, i) =>
-            `${color} 0 ${(100 / prizes.length) * (prizes.length - i)}%`
-        )
-        .reverse()}
+          .map(
+            ({ color }, i) =>
+              `${color} 0 ${(100 / prizes.length) * (prizes.length - i)}%`
+          )
+          .reverse()}
       );`
     );
   };
@@ -161,6 +162,12 @@ const BaseWheel: React.FC = () => {
           }}
           onTransitionEnd={handleTransitionEnd}
         ></ul>
+        <EnergyRing
+          holdTime={holdTime}
+          isHolding={isHolding}
+          className="absolute top-0 left-0 w-full h-full"
+        />
+
         <div className="ticker" ref={tickerRef}></div>
         <button
           onMouseDown={handleMouseDown}
@@ -186,7 +193,6 @@ const BaseWheel: React.FC = () => {
           </span>
         </button>
       </div>
-      <EnergyBar value={holdTime} />
     </div>
   );
 };
