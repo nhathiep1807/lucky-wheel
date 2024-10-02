@@ -52,7 +52,7 @@ function Login() {
 
     return (
         <div className='w-dvw h-dvh flex items-center bg-[#F4D03F] bg-[linear-gradient(132deg,_#F4D03F_0%,_#16A085_100%)]'>
-            <div className='min-w-96 m-auto'>
+            <div className='max-w-96 min-w-80 m-auto'>
                 <div className="p-4 rounded-xl border-stone-300 border-2 bg-stone-100 text-black text-sm shadow-[10px_10px_0px_0px_#000] transition duration-200">
                     <h2 className="uppercase text-3xl text-center font-bold text-text-title">
                         Login
