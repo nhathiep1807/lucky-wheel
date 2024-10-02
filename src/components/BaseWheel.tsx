@@ -2,8 +2,9 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import "./style.css";
 import { twMerge } from "tailwind-merge";
 import { useTrackTime } from "@/hooks/useTrackTime";
-import EnergyBar from "./EnergyBar";
+
 import EnergyRing from "./EnergyRing";
+import Confetti from "react-confetti";
 
 interface Prize {
   text: string;
@@ -133,8 +134,6 @@ const BaseWheel: React.FC = () => {
       currentSliceRef.current = prizes.indexOf(currentPrize);
     }
 
-    setLastPrize(currentPrize);
-
     if (isSpinning) {
       animationFrameRef.current = requestAnimationFrame(runTickerAnimation);
     }
@@ -159,6 +158,8 @@ const BaseWheel: React.FC = () => {
 
   const handleTransitionEnd = () => {
     setIsSpinning(false);
+    console.log("enddddd");
+    setLastPrize(getCurrentPrize());
 
     setRotation(rotation % 360);
     if (animationFrameRef.current) {
@@ -180,8 +181,6 @@ const BaseWheel: React.FC = () => {
       animationFrameRef.current = requestAnimationFrame(runTickerAnimation);
     }
   }, [isSpinning, runTickerAnimation]);
-
-  console.log({ lastPrize });
 
   return (
     <div className="flex">
@@ -228,6 +227,35 @@ const BaseWheel: React.FC = () => {
           </span>
         </button>
       </div>
+
+      {lastPrize && (
+        <div
+          className={twMerge(
+            "fixed top-0 left-0 w-full h-full z-[999] flex items-center justify-center"
+            // lastPrize ? "flex" : "hidden"
+          )}
+        >
+          <audio src="/sounds/cheer.mp3" autoPlay />
+          <Confetti width={3000} height={3000} />
+          <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50"></div>
+          <div className="w-[50%] py-10 bg-white relative z-1 px-10 rounded-lg">
+            <p className="text-2xl font-bold text-center mb-10">
+              Congratulations! You won
+            </p>
+            <p className="text-4xl font-medium text-red-400 text-center mb-10">
+              {lastPrize?.text}
+            </p>
+            <button
+              className="w-full bg-red-400 hover:bg-red-500 text-white font-bold py-4 px-10 rounded-lg text-xl"
+              onClick={() => {
+                setLastPrize(null);
+              }}
+            >
+              Yayyy!
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

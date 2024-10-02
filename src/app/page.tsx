@@ -3,7 +3,7 @@ import Wheel from "@/components/Wheel";
 
 export default function Home() {
   return (
-    <div className="relative w-screen h-screen py-10 overflow-hidden">
+    <div className="relative w-screen h-screen py-10 overflow-hidden bg-white">
       {/* <img
         src={background.src}
         alt="background"

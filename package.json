@@ -16,6 +16,7 @@
     "classcat": "^5.0.5",
     "next": "14.2.13",
     "react": "^18",
+    "react-confetti": "^6.1.0",
     "react-dom": "^18",
     "react-hook-form": "^7.53.0",
     "react-toastify": "^10.0.5",
