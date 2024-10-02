@@ -1,6 +1,7 @@
 import QueryProvider from "@/provider/query-provider";
 import type { Metadata } from "next";
 import { Fredoka } from "next/font/google";
+import { GlobalProvider } from "./context";
 
 import "./globals.css";
 const fredoka = Fredoka({ subsets: ["latin"] });
@@ -17,9 +18,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <QueryProvider>
-        <body className={`${fredoka.className} antialiased`}>{children}</body>
-      </QueryProvider>
+      <GlobalProvider>
+        <QueryProvider>
+          <body className={`${fredoka.className} antialiased`}>{children}</body>
+        </QueryProvider>
+      </GlobalProvider>
     </html>
   );
 }

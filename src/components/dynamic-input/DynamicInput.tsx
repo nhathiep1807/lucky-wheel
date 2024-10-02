@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { PlusIcon, CheckCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Input } from '../input';
+import { v4 as uuidv4 } from 'uuid';
 
 type ItemInput = {
+    id: string,
     name: string,
     value: string
 }
 
 const DynamicInput = () => {
     const [items, setItems] = useState<ItemInput[]>([]);
+    const uuid = uuidv4()
 
     const addNewInput = () => {
-        setItems([...items, { name: '', value: '' }]);
+        setItems([...items, { id: uuid, name: '', value: '' }]);
     };
 
     // const handleChange = (index, field, value) => {
@@ -25,8 +28,8 @@ const DynamicInput = () => {
         setItems(updatedItems);
     };
 
-    const deleteItem = (index: number) => {
-        const updatedItems = items.filter((_, i) => i !== index);
+    const deleteItem = (index: string) => {
+        const updatedItems = items.filter((o) => o.id !== index);
         setItems(updatedItems);
     };
 
@@ -36,7 +39,7 @@ const DynamicInput = () => {
                 <PlusIcon className="text-black w-4 h-4" /> Add item
             </button>
             {items.map((item, index) => (
-                <div key={index} className="flex items-center space-x-2">
+                <div key={item.id} className="flex items-center space-x-2">
                     <Input
                         name="name"
                         type="text"
@@ -52,7 +55,7 @@ const DynamicInput = () => {
                             <CheckCircleIcon className="text-black w-5 h-5" />
                         </button>
 
-                        <button type="button" onClick={() => deleteItem(index)}>
+                        <button type="button" onClick={() => deleteItem(item.id)}>
                             <TrashIcon className="text-black w-5 h-5" />
                         </button>
                     </div>

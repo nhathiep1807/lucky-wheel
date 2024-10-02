@@ -1,6 +1,7 @@
 "use client";
 
 import React, { PropsWithChildren, useState } from "react";
+import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon } from "@heroicons/react/24/outline"
 
 type DrawerProps = {
     className?: React.CSSProperties
@@ -21,9 +22,9 @@ const Drawer = ({ className, children }: PropsWithChildren<DrawerProps>) => {
         >
             <button
                 onClick={toggleMenu}
-                className="absolute top-2 left-[-12px] bg-white rounded-full px-2 py-1 text-gray-500 shadow-md border shadow-[4px_2px_0px_0px_#999999]"
+                className="absolute top-2 left-[-12px] bg-white rounded-full px-2 py-1 text-gray-500 shadow-md border shadow-[4px_2px_0px_0px_#808080]"
             >
-                {isOpen ? "<" : ">"}
+                {isOpen ? <ChevronDoubleRightIcon className="text-black w-3 h-5" /> : <ChevronDoubleLeftIcon className="text-black w-3 h-5" />}
             </button>
             <div className={`${isOpen ? "w-[400px]" : "w-10"}`}>
                 {isOpen ? children : <div></div>}

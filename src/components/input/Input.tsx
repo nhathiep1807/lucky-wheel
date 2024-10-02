@@ -20,7 +20,7 @@ const Input: React.FC<InputProps> = ({
     ...props
 }) => {
     return (
-        <div className={classcat(["grid gap-2", className])}>
+        <div className={classcat(["grid gap-1", className])}>
             {label && (
                 <label
                     htmlFor={name}
