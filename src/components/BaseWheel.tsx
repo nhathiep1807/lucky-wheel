@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import "./style.css";
 import { twMerge } from "tailwind-merge";
 import { useTrackTime } from "@/hooks/useTrackTime";
@@ -18,33 +18,28 @@ const prizes: Prize[] = [
   { text: "Free DIY Carwash", color: "hsl(12 76% 61%)", angle: 40 },
   { text: "Free Car", color: "hsl(173 58% 39%)", angle: 30 },
   { text: "Eternal Damnation", color: "hsl(350 60% 52%)", angle: 60 },
-  { text: "Used Travel Mug", color: "hsl(91 43% 54%)", angle: 60 },
   { text: "One Solid Hug", color: "hsl(140 11% 74%)", angle: 20 },
-  // { text: "10 percent", color: "hsl(56 40% 67%)", angle: 10 },
+  { text: "Used Travel Mug", color: "hsl(91 43% 54%)", angle: 60 },
 ];
 
 const BaseWheel: React.FC = () => {
   const { holdTime, isHolding, handleMouseDown, handleMouseUp } =
     useTrackTime();
 
+  const [lastPrize, setLastPrize] = useState<Prize | null>(null);
   const [rotation, setRotation] = useState<number>(0);
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
   const spinnerRef = useRef<HTMLUListElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
   const animationFrameRef = useRef<number | null>(null);
-  let currentSlice = 0;
+  const currentSliceRef = useRef<number>(0);
 
   const totalAngle = prizes.reduce((sum, prize) => sum + prize.angle, 0);
 
   const spinertia = (min: number, max: number) =>
     Math.floor(((holdTime * 2) / 1000) * (max - min + 1)) + min;
 
-  const setupWheel = () => {
-    createConicGradient();
-    createPrizeNodes();
-  };
-
-  const getCurrentPrize = () => {
+  const getCurrentPrize = useCallback(() => {
     if (!spinnerRef.current) return null;
 
     const spinnerStyles = window.getComputedStyle(spinnerRef.current);
@@ -57,19 +52,25 @@ const BaseWheel: React.FC = () => {
     let rad = Math.atan2(b, a);
     if (rad < 0) rad += 2 * Math.PI;
 
-    const angle = (rad * (180 / Math.PI) + 90) % 360;
+    let angle = ((rad * 180) / Math.PI + 90) % 360;
+
+    // The wheel spins clockwise, so we need to reverse the angle
+    angle = (450 + rotation - angle) % 360;
 
     let accumulatedAngle = 0;
     for (let i = 0; i < prizes.length; i++) {
-      accumulatedAngle += prizes[i].angle;
-      if (angle < accumulatedAngle) {
+      accumulatedAngle += (prizes[i].angle * 360) / totalAngle;
+      if (angle <= accumulatedAngle) {
         return prizes[i];
       }
     }
-    return prizes[prizes.length - 1];
-  };
 
-  const createPrizeNodes = () => {
+    // If we've gone through all prizes and haven't found a match,
+    // it means we're in the last segment (which wraps around to 0)
+    return prizes[prizes.length - 1];
+  }, []);
+
+  const createPrizeNodes = useCallback(() => {
     const spinner = spinnerRef.current;
     if (!spinner) return;
 
@@ -86,9 +87,9 @@ const BaseWheel: React.FC = () => {
       );
       currentRotation += realityAngle;
     });
-  };
+  }, [totalAngle]);
 
-  const createConicGradient = () => {
+  const createConicGradient = useCallback(() => {
     const spinner = spinnerRef.current;
     if (!spinner) return;
 
@@ -105,14 +106,22 @@ const BaseWheel: React.FC = () => {
     });
 
     spinner.setAttribute("style", `background: ${gradientString};`);
-  };
+  }, [totalAngle]);
 
-  const runTickerAnimation = () => {
+  const setupWheel = useCallback(() => {
+    createConicGradient();
+    createPrizeNodes();
+  }, [createConicGradient, createPrizeNodes]);
+
+  const runTickerAnimation = useCallback(() => {
     if (!spinnerRef.current) return;
 
     const currentPrize = getCurrentPrize();
 
-    if (currentPrize && currentSlice !== prizes.indexOf(currentPrize)) {
+    if (
+      currentPrize &&
+      currentSliceRef.current !== prizes.indexOf(currentPrize)
+    ) {
       if (tickerRef.current) {
         tickerRef.current.style.animation = "none";
         setTimeout(() => {
@@ -121,18 +130,21 @@ const BaseWheel: React.FC = () => {
           }
         }, 1);
       }
-      currentSlice = prizes.indexOf(currentPrize);
+      currentSliceRef.current = prizes.indexOf(currentPrize);
     }
+
+    setLastPrize(currentPrize);
 
     if (isSpinning) {
       animationFrameRef.current = requestAnimationFrame(runTickerAnimation);
     }
-  };
+  }, [getCurrentPrize, isSpinning]);
 
   const handleSpin = () => {
     if (isSpinning) return;
 
     setIsSpinning(true);
+
     const newRotation =
       rotation +
       Math.floor(((holdTime * 3) / 1000) * 360 + spinertia(2000, 5000));
@@ -147,6 +159,7 @@ const BaseWheel: React.FC = () => {
 
   const handleTransitionEnd = () => {
     setIsSpinning(false);
+
     setRotation(rotation % 360);
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
@@ -160,13 +173,15 @@ const BaseWheel: React.FC = () => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, []);
+  }, [setupWheel]);
 
   useEffect(() => {
     if (isSpinning) {
       animationFrameRef.current = requestAnimationFrame(runTickerAnimation);
     }
-  }, [isSpinning]);
+  }, [isSpinning, runTickerAnimation]);
+
+  console.log({ lastPrize });
 
   return (
     <div className="flex">
@@ -201,14 +216,14 @@ const BaseWheel: React.FC = () => {
             handleSpin();
           }}
           disabled={isSpinning}
-          className="absolute flex items-center justify-center w-10 h-10 p-4 px-5 py-3 overflow-hidden font-bold text-indigo-600 -translate-x-1/2 -translate-y-1/2 bg-white rounded-full shadow-2xl top-1/2 group md:w-16 md:h-16 lg:w-32 lg:h-32 left-1/2"
+          className="absolute flex items-center justify-center w-10 h-10 p-4 px-5 py-3 overflow-hidden font-bold text-indigo-600 -translate-x-1/2 -translate-y-1/2 bg-white rounded-full shadow-2xl top-1/2 group md:w-16 md:h-16 lg:w-24 lg:h-24 left-1/2 hover:scale-110 transition-all duration-300"
         >
           <span className="absolute top-0 left-0 w-40 h-40 -mt-10 -ml-3 transition-all duration-700 bg-red-500 rounded-full blur-md ease"></span>
           <span className="absolute inset-0 w-full h-full transition duration-700 group-hover:rotate-180 ease">
             <span className="absolute bottom-0 left-0 w-24 h-24 -ml-10 bg-purple-500 rounded-full blur-md"></span>
             <span className="absolute bottom-0 right-0 w-24 h-24 -mr-10 bg-pink-500 rounded-full blur-md"></span>
           </span>
-          <span className="relative text-white select-none">
+          <span className="relative text-white select-none md:tex-xl lg:text-2xl">
             {isHolding ? "Release" : "Spin"}
           </span>
         </button>
