@@ -3,6 +3,7 @@ import "./style.css";
 import { twMerge } from "tailwind-merge";
 import { useTrackTime } from "@/hooks/useTrackTime";
 import EnergyBar from "./EnergyBar";
+import useSound from "use-sound";
 
 interface Prize {
   text: string;
@@ -24,11 +25,14 @@ const BaseWheel: React.FC = () => {
   const { holdTime, isHolding, handleMouseDown, handleMouseUp } =
     useTrackTime();
 
+  // const [play] = useSound("/public/sounds/spin.mp3");
+
   const [rotation, setRotation] = useState<number>(0);
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
   const spinnerRef = useRef<HTMLUListElement>(null);
   const tickerRef = useRef<HTMLDivElement>(null);
   const animationFrameRef = useRef<number | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
   let currentSlice = 0;
 
   const prizeSlice = 360 / prizes.length;
@@ -66,17 +70,21 @@ const BaseWheel: React.FC = () => {
       `background: conic-gradient(
         from -90deg,
         ${prizes
-        .map(
-          ({ color }, i) =>
-            `${color} 0 ${(100 / prizes.length) * (prizes.length - i)}%`
-        )
-        .reverse()}
+          .map(
+            ({ color }, i) =>
+              `${color} 0 ${(100 / prizes.length) * (prizes.length - i)}%`
+          )
+          .reverse()}
       );`
     );
   };
 
   const runTickerAnimation = () => {
     if (!spinnerRef.current) return;
+
+    if (audioRef.current) {
+      audioRef.current.play();
+    }
 
     const spinnerStyles = window.getComputedStyle(spinnerRef.current);
     const values = spinnerStyles.transform
@@ -106,6 +114,10 @@ const BaseWheel: React.FC = () => {
     if (isSpinning) {
       animationFrameRef.current = requestAnimationFrame(runTickerAnimation);
     }
+
+    // if (audioRef.current) {
+    //   audioRef.current.pause();
+    // }
   };
 
   const handleSpin = () => {
@@ -187,6 +199,7 @@ const BaseWheel: React.FC = () => {
         </button>
       </div>
       <EnergyBar value={holdTime} />
+      <audio src="/sounds/spin.mp3" ref={audioRef} />
     </div>
   );
 };
