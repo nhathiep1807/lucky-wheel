@@ -51,7 +51,7 @@ export default function EnergyRing({
         strokeLinecap="round"
         strokeDasharray={strokeDasharray}
         strokeDashoffset={strokeDashoffset}
-        transform="rotate(-90 50 50)"
+        transform="rotate(180 50 50)"
         style={{
           transition: "stroke-dashoffset 0.1s linear",
           opacity: isHolding || progress > 0 ? 1 : 0,
