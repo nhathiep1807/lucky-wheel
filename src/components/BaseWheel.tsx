@@ -5,6 +5,7 @@ import { useTrackTime } from "@/hooks/useTrackTime";
 
 import EnergyRing from "./EnergyRing";
 import Confetti from "react-confetti";
+import useSound from "use-sound";
 
 interface Prize {
   text?: string;
@@ -14,22 +15,25 @@ interface Prize {
 }
 
 const prizes: Prize[] = [
-  { text: "10% Off Sticker Price", color: "hsl(197 30% 43%)", angle: 30 }, //34.8deg
-  { text: "No Money Down", color: "hsl(43 74% 66%)", angle: 40 },
-  { text: "Half Off Sticker Price", color: "hsl(27 87% 67%)", angle: 40 },
-  { text: "Free DIY Carwash", color: "hsl(12 76% 61%)", angle: 40 },
-  { text: "Free Car", color: "hsl(173 58% 39%)", angle: 30 },
-  { text: "Eternal Damnation", color: "hsl(350 60% 52%)", angle: 60 },
   {
-    // text: "One Solid Hug",
-    image: "https://picsum.photos/200",
-    color: "hsl(140 11% 74%)",
+    // text: "10% Off Sticker Price",
+    color: "#ffffff",
+    image: "/images/gift.png",
+    angle: 30,
+  }, //34.8deg
+  { text: "No Money Down", color: "#72a5e4", angle: 40 },
+  { text: "Half Off Sticker Price", color: "#FFB832", angle: 40 },
+  { text: "Free DIY Carwash", color: "#98BEAB", angle: 40 },
+  { color: "#ffffff", image: "/images/gift.png", angle: 30 },
+  { text: "Eternal Damnation", color: "#72a5e4", angle: 60 },
+  {
+    text: "One Solid Hug",
+    color: "#FFB832",
     angle: 20,
   },
   {
-    // text: "Used Travel Mug",
-    image: "https://picsum.photos/200",
-    color: "hsl(91 43% 54%)",
+    text: "Used Travel Mug",
+    color: "#98BEAB",
     angle: 60,
   },
 ];
@@ -47,7 +51,8 @@ const BaseWheel: React.FC = () => {
   const currentSliceRef = useRef<number>(0);
   const clickAudioRef = useRef<HTMLAudioElement>(null);
   const spinAudioRef = useRef<HTMLAudioElement>(null);
-  const powerUpAudioRef = useRef<HTMLAudioElement>(null);
+
+  const [play, { stop }] = useSound("/sounds/power-up.mp3");
 
   const totalAngle = prizes.reduce((sum, prize) => sum + prize.angle, 0);
 
@@ -225,10 +230,14 @@ const BaseWheel: React.FC = () => {
     }
   }, [isSpinning, runTickerAnimation]);
 
+  useEffect(() => {
+    if (isHolding) play();
+    else stop();
+  }, [isHolding]);
+
   return (
     <div className="flex">
       <audio src="/sounds/spin.mp3" ref={spinAudioRef}></audio>
-      <audio src="/sounds/power-up.mp3" ref={powerUpAudioRef}></audio>
 
       <div className={twMerge("deal-wheel", isSpinning && "is-spinning")}>
         <ul
@@ -253,14 +262,13 @@ const BaseWheel: React.FC = () => {
         <button
           onMouseDown={() => {
             clickAudioRef.current?.play();
-            if (powerUpAudioRef.current) {
-              powerUpAudioRef.current.currentTime = 0;
-              powerUpAudioRef.current?.play();
-            }
+            // if (powerUpAudioRef.current) {
+            //   powerUpAudioRef.current.currentTime = 0;
+            //   powerUpAudioRef.current?.play();
+            // }
             handleMouseDown();
           }}
           onMouseUp={() => {
-            powerUpAudioRef.current?.pause();
             handleMouseUp();
             handleSpin();
           }}
@@ -302,7 +310,7 @@ const BaseWheel: React.FC = () => {
               <img
                 src={lastPrize?.image}
                 alt={lastPrize?.text}
-                className="w-full h-full object-cover aspect-video mb-6"
+                className="w-full h-full object-contain aspect-video mb-6"
               />
             )}
             <button
