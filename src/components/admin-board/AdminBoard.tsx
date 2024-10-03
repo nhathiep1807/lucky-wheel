@@ -12,6 +12,7 @@ import { Input } from '../input'
 import { Select } from '../select';
 import InputColor from 'react-input-color';
 import { ImagePicker } from '../image-picker';
+import { ListItem } from '../list-item';
 
 function AdminBoard() {
     const router = useRouter();
@@ -71,18 +72,19 @@ function AdminBoard() {
             <div className='flex justify-between items-center p-4 border-b'>
                 <h3 className='ml-8 font-bold text-xl'>{userInfo?.phoneNumber}</h3>
                 <div className='flex gap-2'>
-                    <Button name='Add' onClick={onClickAddUser} />
                     <Button name='Logout' onClick={onClickLogout} />
                 </div>
 
             </div>
-            <div className='flex justify-end p-4'>
+            <div className='flex justify-between px-4 pt-4 gap-2'>
                 <Button name='Custom Items' onClick={onClickCustomItems} />
+                <Button name='Add Player' onClick={onClickAddUser} />
             </div>
-            <div className='p-4 max-h-[400px] min-h-[400px] overflow-y-auto border-b'>
+            <div className='p-4 max-h-[500px] min-h-[500px] border-b'>
                 <DynamicInput />
+                <ListItem />
             </div>
-            <EditableText initialText='Ruleaksfalsdkjákldjákldjaksljkl' />
+            <EditableText initialText='Please input your rule here!' />
             <Dialog open={isOpenDialog} title="Are you have an account ?" setOpen={setIsOpenDialog} actionButton={<div className='flex items-center gap-2 py-2'><Button name="Yes" onClick={onClickAddAccount}></Button>
                 <Button name="Create New" onClick={onClickCreateNewAccount}></Button></div>}>
                 <div>If you want to accumulate points for yourself,
@@ -143,7 +145,7 @@ function AdminBoard() {
                         <InputColor
                             initialValue="#000000"
                             onChange={setColor}
-                            placement="left"
+                            placement="right"
 
                         />
                     </div>

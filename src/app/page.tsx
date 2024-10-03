@@ -1,9 +1,10 @@
 import Wheel from "@/components/Wheel";
-// import background from "@/assets/background.jpg";
+import background from "@/assets/background-3.jpg";
+import { Toaster } from "react-hot-toast";
 
 export default function Home() {
   return (
-    <div className="relative w-screen h-screen py-10 overflow-hidden bg-white">
+    <div className="relative w-screen h-screen py-10 overflow-hidden">
       {/* <img
         src={background.src}
         alt="background"
