@@ -286,7 +286,7 @@ const BaseWheel: React.FC = () => {
           <audio src="/sounds/cheer.mp3" autoPlay />
           <Confetti width={3000} height={3000} />
           <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50"></div>
-          <div className="w-[50%] py-10 bg-white relative z-1 px-10 rounded-lg">
+          <div className="w-[98%] md:w-[50%] py-10 bg-white relative z-1 px-4 md:px-10 rounded-lg">
             <p className="text-2xl font-bold text-center mb-10">
               Congratulations! You won
             </p>

@@ -13,7 +13,7 @@ export default function Wheel() {
       <div className="flex flex-col items-center justify-center w-full gap-4">
         <div></div>
         <BaseWheel />
-        <p className="text-2xl font-semibold text-gray-600">
+        <p className="text-2xl font-semibold text-gray-600 px-4 text-center">
           Hold Down, Speed Up—Your Next Drink Awaits!
         </p>
       </div>
