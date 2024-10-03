@@ -278,7 +278,10 @@ const BaseWheel: React.FC = () => {
             handleSpin();
           }}
           disabled={isSpinning}
-          className="absolute group hover:active:scale-90 hover:scale-105 flex items-center justify-center w-10 h-10 font-bold -translate-x-1/2 -translate-y-1/2 bg-red-400 rounded-full shadow-2xl top-1/2 group md:w-16 md:h-16 lg:w-24 lg:h-24 left-1/2 transition-all duration-300"
+          className={twMerge(
+            isSpinning ? "select-none" : "hover:active:scale-90",
+            "absolute group hover:scale-105 flex items-center justify-center w-10 h-10 font-bold -translate-x-1/2 -translate-y-1/2 bg-red-400 rounded-full shadow-2xl top-1/2 group md:w-16 md:h-16 lg:w-24 lg:h-24 left-1/2 transition-all duration-300"
+          )}
         >
           {!isSpinning && !isHolding && (
             <span className="w-full h-full z-1 bg-red-300 rounded-full animate-ping-slow"></span>
