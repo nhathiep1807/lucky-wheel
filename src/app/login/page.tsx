@@ -13,6 +13,7 @@ import { GlobalContext } from '../context';
 import { TypeErrorResponse } from '@/types/common';
 import cookie from '@/utils/cookie';
 import { ACCESS_TOKEN } from '@/constants/common';
+import toast from 'react-hot-toast';
 
 
 const LoginSchema = z.object({
@@ -38,6 +39,7 @@ function Login() {
     const onSubmit = (data: LoginForm) => {
         login(data, {
             onSuccess: (data) => {
+                toast.success('Login Success !');
                 cookie.set(ACCESS_TOKEN, data.data?.access_token);
                 setIsAuthenticated(true);
                 setUserInfo(data.data.user);
@@ -45,7 +47,7 @@ function Login() {
             },
             onError: (error: any) => {
                 const _error: TypeErrorResponse = error;
-                console.log('error!', error)
+                toast.error(error);
             },
         });
     };
