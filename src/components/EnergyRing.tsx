@@ -40,20 +40,24 @@ export default function EnergyRing({
         stroke="#e5e5e5"
         strokeWidth="2"
       />
-      {isHolding && (
-        <circle
-          cx="50"
-          cy="50"
-          r="49"
-          fill="none"
-          stroke="url(#ringGradient)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeDasharray={strokeDasharray}
-          strokeDashoffset={strokeDashoffset}
-          transform="rotate(180 50 50)"
-        />
-      )}
+      {/* {isHolding && ( */}
+      <circle
+        cx="50"
+        cy="50"
+        r="49"
+        fill="none"
+        stroke="url(#ringGradient)"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeDasharray={strokeDasharray}
+        strokeDashoffset={strokeDashoffset}
+        transform="rotate(-90 50 50)"
+        style={{
+          transition: "stroke-dashoffset 0.1s linear",
+          opacity: isHolding || progress > 0 ? 1 : 0,
+        }}
+      />
+      {/* )} */}
     </svg>
   );
 }

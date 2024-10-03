@@ -5,7 +5,6 @@ import { useTrackTime } from "@/hooks/useTrackTime";
 
 import EnergyRing from "./EnergyRing";
 import Confetti from "react-confetti";
-import PointerIcon from "@/icons/Pointer";
 
 interface Prize {
   text?: string;
@@ -48,6 +47,7 @@ const BaseWheel: React.FC = () => {
   const currentSliceRef = useRef<number>(0);
   const clickAudioRef = useRef<HTMLAudioElement>(null);
   const spinAudioRef = useRef<HTMLAudioElement>(null);
+  const powerUpAudioRef = useRef<HTMLAudioElement>(null);
 
   const totalAngle = prizes.reduce((sum, prize) => sum + prize.angle, 0);
 
@@ -228,6 +228,7 @@ const BaseWheel: React.FC = () => {
   return (
     <div className="flex">
       <audio src="/sounds/spin.mp3" ref={spinAudioRef}></audio>
+      <audio src="/sounds/power-up.mp3" ref={powerUpAudioRef}></audio>
 
       <div className={twMerge("deal-wheel", isSpinning && "is-spinning")}>
         <ul
@@ -252,12 +253,15 @@ const BaseWheel: React.FC = () => {
         <button
           onMouseDown={() => {
             clickAudioRef.current?.play();
+            if (powerUpAudioRef.current) {
+              powerUpAudioRef.current.currentTime = 0;
+              powerUpAudioRef.current?.play();
+            }
             handleMouseDown();
           }}
           onMouseUp={() => {
+            powerUpAudioRef.current?.pause();
             handleMouseUp();
-            clickAudioRef.current?.pause();
-            clickAudioRef.current?.play();
             handleSpin();
           }}
           onTouchStart={handleMouseDown}
@@ -284,6 +288,7 @@ const BaseWheel: React.FC = () => {
           )}
         >
           <audio src="/sounds/cheer.mp3" autoPlay />
+
           <Confetti width={3000} height={3000} />
           <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50"></div>
           <div className="w-[98%] md:w-[50%] py-10 bg-white relative z-1 px-4 md:px-10 rounded-lg">
