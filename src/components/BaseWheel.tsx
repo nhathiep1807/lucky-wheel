@@ -47,6 +47,7 @@ const BaseWheel: React.FC = () => {
   const animationFrameRef = useRef<number | null>(null);
   const currentSliceRef = useRef<number>(0);
   const clickAudioRef = useRef<HTMLAudioElement>(null);
+  const spinAudioRef = useRef<HTMLAudioElement>(null);
 
   const totalAngle = prizes.reduce((sum, prize) => sum + prize.angle, 0);
 
@@ -100,7 +101,6 @@ const BaseWheel: React.FC = () => {
 
       const heightImg =
         (rad * Math.sin(((realityAngle / 2) * Math.PI) / 180) * 4) / 5;
-      if (image) console.log({ heightImg, realityAngle, rad });
 
       const prizeElement = document.createElement("li");
       prizeElement.className = "prize";
@@ -161,6 +161,11 @@ const BaseWheel: React.FC = () => {
       currentPrize &&
       currentSliceRef.current !== prizes.indexOf(currentPrize)
     ) {
+      if (spinAudioRef.current) {
+        spinAudioRef.current.currentTime = 0;
+        spinAudioRef.current.play();
+      }
+
       if (tickerRef.current) {
         tickerRef.current.style.animation = "none";
         setTimeout(() => {
@@ -222,6 +227,8 @@ const BaseWheel: React.FC = () => {
 
   return (
     <div className="flex">
+      <audio src="/sounds/spin.mp3" ref={spinAudioRef}></audio>
+
       <div className={twMerge("deal-wheel", isSpinning && "is-spinning")}>
         <ul
           className="spinner"
