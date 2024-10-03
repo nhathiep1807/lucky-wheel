@@ -7,8 +7,9 @@ import EnergyRing from "./EnergyRing";
 import Confetti from "react-confetti";
 
 interface Prize {
-  text: string;
+  text?: string;
   color: string;
+  image?: string;
   angle: number;
 }
 
@@ -19,8 +20,18 @@ const prizes: Prize[] = [
   { text: "Free DIY Carwash", color: "hsl(12 76% 61%)", angle: 40 },
   { text: "Free Car", color: "hsl(173 58% 39%)", angle: 30 },
   { text: "Eternal Damnation", color: "hsl(350 60% 52%)", angle: 60 },
-  { text: "One Solid Hug", color: "hsl(140 11% 74%)", angle: 20 },
-  { text: "Used Travel Mug", color: "hsl(91 43% 54%)", angle: 60 },
+  {
+    // text: "One Solid Hug",
+    image: "https://picsum.photos/200",
+    color: "hsl(140 11% 74%)",
+    angle: 20,
+  },
+  {
+    // text: "Used Travel Mug",
+    image: "https://picsum.photos/200",
+    color: "hsl(91 43% 54%)",
+    angle: 60,
+  },
 ];
 
 const BaseWheel: React.FC = () => {
@@ -75,17 +86,42 @@ const BaseWheel: React.FC = () => {
     const spinner = spinnerRef.current;
     if (!spinner) return;
 
+    const pieWidth = window.getComputedStyle(spinner).width;
+    const rad = parseFloat(pieWidth) / 2;
+
+    spinner.innerHTML = ""; // Clear existing prize nodes
+
     let currentRotation = 0;
-    prizes.forEach(({ text, angle }) => {
+    prizes.forEach(({ text, angle, image }) => {
       const realityAngle = (angle * 360) / totalAngle;
       const rotation = realityAngle / 2 + currentRotation;
 
-      spinner.insertAdjacentHTML(
-        "beforeend",
-        `<li class="prize" style="--rotate: ${rotation}deg">
-          <span class="text">${text}</span>
-        </li>`
-      );
+      const heightImg =
+        (rad * Math.sin(((realityAngle / 2) * Math.PI) / 180) * 4) / 5;
+      if (image) console.log({ heightImg, realityAngle, rad });
+
+      const prizeElement = document.createElement("li");
+      prizeElement.className = "prize";
+      prizeElement.style.setProperty("--rotate", `${rotation}deg`);
+
+      if (image) {
+        const imgElement = document.createElement("img");
+        imgElement.src = image;
+        imgElement.alt = text || "";
+        imgElement.className = "prize-image";
+        imgElement.style.height = `${heightImg}px`;
+        imgElement.style.width = `${heightImg}px`;
+        prizeElement.appendChild(imgElement);
+      }
+
+      if (text) {
+        const textElement = document.createElement("span");
+        textElement.className = "text";
+        textElement.textContent = text;
+        prizeElement.appendChild(textElement);
+      }
+
+      spinner.appendChild(prizeElement);
       currentRotation += realityAngle;
     });
   }, [totalAngle]);
@@ -158,7 +194,7 @@ const BaseWheel: React.FC = () => {
 
   const handleTransitionEnd = () => {
     setIsSpinning(false);
-    console.log("enddddd");
+
     setLastPrize(getCurrentPrize());
 
     setRotation(rotation % 360);
@@ -232,7 +268,6 @@ const BaseWheel: React.FC = () => {
         <div
           className={twMerge(
             "fixed top-0 left-0 w-full h-full z-[999] flex items-center justify-center"
-            // lastPrize ? "flex" : "hidden"
           )}
         >
           <audio src="/sounds/cheer.mp3" autoPlay />
@@ -245,6 +280,13 @@ const BaseWheel: React.FC = () => {
             <p className="text-4xl font-medium text-red-400 text-center mb-10">
               {lastPrize?.text}
             </p>
+            {lastPrize.image && (
+              <img
+                src={lastPrize?.image}
+                alt={lastPrize?.text}
+                className="w-full h-full object-cover aspect-video mb-6"
+              />
+            )}
             <button
               className="w-full bg-red-400 hover:bg-red-500 text-white font-bold py-4 px-10 rounded-lg text-xl"
               onClick={() => {

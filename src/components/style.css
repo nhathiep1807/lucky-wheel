@@ -16,7 +16,7 @@ body {
 }
 
 .deal-wheel {
-  --size: clamp(250px, 80vmin, 700px);
+  --size: clamp(250px, 70vmin, 700px);
   --lg-hs: 0 3%;
   --lg-stop: 50%;
   --lg: linear-gradient(
@@ -55,6 +55,10 @@ body {
   transform: rotate(calc(var(--rotate, 25) * 1deg));
   border-radius: 50%;
   box-shadow: inset 0 0 0 calc(var(--size) / 40) hsl(0deg 0% 0% / 0.06);
+}
+
+.spinner .prize-image {
+  object-fit: cover;
 }
 
 .spinner * {
