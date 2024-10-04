@@ -5,6 +5,7 @@ import { useTrackTime } from "@/hooks/useTrackTime";
 
 import EnergyRing from "./EnergyRing";
 import Confetti from "react-confetti";
+import { useGetListWheelItemQuery } from "@/hooks/wheel-items/useGetListWheelItem";
 
 interface Prize {
   text?: string;
@@ -34,6 +35,20 @@ const prizes: Prize[] = [
   },
 ];
 
+function formatToPrizeArray(data: any[] | undefined): Prize[] {
+  const totalItems = data?.length;
+  if (data && totalItems) return data.map((item, index) => ({
+    text: item.name,
+    color: item.color,
+    image: item.img,
+    angle: 80
+  }));
+  return [{
+    color: '',
+    angle: 360
+  }]
+}
+
 const BaseWheel: React.FC = () => {
   const { holdTime, isHolding, handleMouseDown, handleMouseUp } =
     useTrackTime();
@@ -49,6 +64,9 @@ const BaseWheel: React.FC = () => {
   const spinAudioRef = useRef<HTMLAudioElement>(null);
   const powerUpAudioRef = useRef<HTMLAudioElement>(null);
 
+  const { data: listWheelItems, isLoading } = useGetListWheelItemQuery()
+
+  const prizes = formatToPrizeArray(listWheelItems?.data)
   const totalAngle = prizes.reduce((sum, prize) => sum + prize.angle, 0);
 
   const spinertia = (min: number, max: number) =>
@@ -138,9 +156,8 @@ const BaseWheel: React.FC = () => {
     prizes.forEach(({ color, angle }, index) => {
       const startAngle = currentAngle;
       const endAngle = currentAngle + (angle * 360) / totalAngle;
-      gradientString += `${color} ${startAngle}deg ${endAngle}deg${
-        index < prizes.length - 1 ? "," : ")"
-      }`;
+      gradientString += `${color} ${startAngle}deg ${endAngle}deg${index < prizes.length - 1 ? "," : ")"
+        }`;
       currentAngle = endAngle;
     });
 
