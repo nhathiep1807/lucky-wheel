@@ -261,14 +261,12 @@ const BaseWheel: React.FC = () => {
         <audio src="/sounds/click.mp3" ref={clickAudioRef}></audio>
         <button
           onMouseDown={() => {
+            if (isSpinning) return;
             clickAudioRef.current?.play();
-            // if (powerUpAudioRef.current) {
-            //   powerUpAudioRef.current.currentTime = 0;
-            //   powerUpAudioRef.current?.play();
-            // }
             handleMouseDown();
           }}
           onMouseUp={() => {
+            if (isSpinning) return;
             handleMouseUp();
             handleSpin();
           }}
@@ -313,7 +311,7 @@ const BaseWheel: React.FC = () => {
               <img
                 src={lastPrize?.image}
                 alt={lastPrize?.text}
-                className="w-full h-full object-contain aspect-video mb-6"
+                className="w-full h-full object-contain aspect-video mb-6 max-w-[50%] mx-auto"
               />
             )}
             <button
