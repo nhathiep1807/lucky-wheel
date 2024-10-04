@@ -20,6 +20,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useUpdateWheelItemMutation } from '@/hooks/wheel-items/useUpdateWheelItem';
 import toast from 'react-hot-toast';
 import { TypeErrorResponse } from '@/types/common';
+import { useCreateNewUserMutation } from '@/hooks/users/useCreateNewUser';
+import { TCreateNewUserResquest } from '@/types/user';
 
 type Color = {
     h: number;
@@ -37,8 +39,11 @@ const UpdateWheelItemSchema = z.object({
     name: z.string().min(1, "Name must be at least 1 characters"),
     value: z.string().min(1, "Value must be at least 1 characters"),
     categoryId: z.string(),
+    weight: z.any(),
     color: z.string(),
-    img: z.string()
+    img: z.string(),
+    userName: z.string().min(1, "User Name must be at least 1 characters"),
+    userPhoneNumber: z.string().min(10, "Phone Number must be at least 10 characters"),
 });
 
 type UpdateWheelItemsForm = z.infer<typeof UpdateWheelItemSchema>
@@ -53,17 +58,21 @@ function AdminBoard() {
     const [color, setColor] = useState<Color>();
     const [imgFile, setImgFile] = useState<File>()
 
-    const { mutate: updateWheelItem } = useUpdateWheelItemMutation()
+    const { mutate: updateWheelItem, isPending } = useUpdateWheelItemMutation()
+    const { mutate: createNewUser, isPending: isLoadingCreateNewUser } = useCreateNewUserMutation()
 
     const { userInfo, reset } = useContext(GlobalContext);
 
-    const { handleSubmit, register, formState, setValue } = useForm<UpdateWheelItemsForm>({
+    const { handleSubmit, register, formState, setValue, getValues } = useForm<UpdateWheelItemsForm>({
         defaultValues: {
             name: "",
             value: "",
             categoryId: "",
+            weight: '0',
             color: "",
-            img: ""
+            img: "",
+            userName: "",
+            userPhoneNumber: ""
         },
         resolver: zodResolver(UpdateWheelItemSchema),
     });
@@ -91,7 +100,27 @@ function AdminBoard() {
         setIsCreateNew(false)
     }
 
-    const onClickExecuteCreate = () => { }
+    const onClickExecuteCreate = () => {
+        const { userPhoneNumber, userName } = getValues()
+        const data: TCreateNewUserResquest = {
+            phoneNumber: userPhoneNumber,
+            name: userName
+        }
+        createNewUser(data, {
+            onSuccess: () => {
+                toast.success('Create user is successfully!');
+                setIsCreateNew(false)
+            },
+            onError: (error: any) => {
+                const _error: TypeErrorResponse = error;
+                toast.error(error);
+            },
+        })
+    }
+
+    const onClickGetUser = () => {
+
+    }
 
     const onClickLogout = () => {
         cookie.delete("accessToken");
@@ -105,6 +134,7 @@ function AdminBoard() {
         setValue('name', item.name)
         setValue('value', item.value.toString())
         setValue('categoryId', item.categoryId)
+        setValue('weight', item.weight)
         setColor({ hex: item.color } as Color)
     }
 
@@ -120,6 +150,7 @@ function AdminBoard() {
         formData.append('value', data.value)
         formData.append('color', color?.hex ?? '')
         formData.append('categoryId', data.categoryId)
+        formData.append('weight', data.weight)
         if (imgFile) {
             formData.append('file', imgFile);
         } else {
@@ -170,7 +201,7 @@ function AdminBoard() {
                     please provide us with your information!</div>
             </Dialog>
             <Dialog open={isAdd} title="Your account" setOpen={setIsAdd} actionButton={<div className='flex items-center gap-2 pt-4'><Button name="Cancel" onClick={onClickCancelAdd}></Button>
-                <Button name="Add" onClick={onClickExecuteCreate}></Button></div>}>
+                <Button name="Add" onClick={onClickGetUser}></Button></div>}>
                 <Input
                     name="phone"
                     type="text"
@@ -178,23 +209,23 @@ function AdminBoard() {
                 />
             </Dialog>
             <Dialog open={isCreateNew} title="Your account" setOpen={setIsCreateNew} actionButton={<div className='flex items-center gap-2 pt-4'><Button name="Cancel" onClick={onClickCancelCreatNew}></Button>
-                <Button name="Add" onClick={onClickExecuteCreate}></Button></div>}>
+                <Button name="Add" onClick={onClickExecuteCreate} isLoading={isLoadingCreateNewUser}></Button></div>}>
                 <div>
                     <Input
                         className='pb-2'
-                        name="name"
+                        name="userName"
                         type="text"
                         placeholder="Please input your name..."
                     />
                     <Input
-                        name="phone"
+                        name="userPhoneNumber"
                         type="text"
-                        placeholder="Please input your mobilephone..."
+                        placeholder="Please input your phone number..."
                     />
                 </div>
             </Dialog>
             <Dialog open={isCustomItems} title="Update Items" setOpen={setIsCustomItems} actionButton={<div className='flex items-center gap-2 pt-4'><Button name="Cancel" onClick={onClickCancelCustomItems}></Button>
-                <Button name="Update" onClick={handleSubmit(onSubmit)}></Button></div>}>
+                <Button name="Update" onClick={handleSubmit(onSubmit)} isLoading={isPending}></Button></div>}>
                 <div className='grid gap-3'>
                     <Input
                         label='Name'
@@ -204,20 +235,29 @@ function AdminBoard() {
                         register={register}
                         error={formState.errors.name?.message}
                     />
-                    <Input
-                        label='Value'
-                        name="value"
-                        type="text"
-                        placeholder="Please input value!"
-                        register={register}
-                        error={formState.errors.value?.message}
-                    />
+                    <div className='flex w-full gap-2'>
+                        <Input
+                            label='Value'
+                            name="value"
+                            type="text"
+                            placeholder="Please input value!"
+                            register={register}
+                            error={formState.errors.value?.message}
+                        />
+                        <Input
+                            label='Weight'
+                            name="weight"
+                            type="number"
+                            register={register}
+                        // error={formState.errors.weight?.message}
+                        />
+                    </div>
                     <Select
                         label='Categories'
                         name="categoryId"
                         placeholder="Select category"
                         register={register}
-                        defaultValue=""
+                        defaultValue={selectedItem?.categoryId}
                         options={[{ value: '1', label: 'point' }, { value: '2', label: 'gift' }]}
                     />
                     <div>

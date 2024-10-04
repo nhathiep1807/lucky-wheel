@@ -7,4 +7,5 @@ export type TCreateWheelItemResponse = {
   createdAt: string;
   updatedAt: string;
   categoryId: string;
+  weight: string
 };

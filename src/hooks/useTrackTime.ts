@@ -26,8 +26,15 @@ export const useTrackTime = () => {
       setHoldTime(Date.now() - startTimeRef.current);
 
       setInterval(() => {
-        if (holdTime <= 0) return;
-        setHoldTime((holdTime) => holdTime - 10);
+        if (holdTime <= 0) {
+          setHoldTime(0);
+          return;
+        }
+
+        setHoldTime((holdTime) => {
+          if (holdTime - 10 <= 0) return 0;
+          return holdTime - 10;
+        });
       }, 10);
     }
   }, [holdTime]);

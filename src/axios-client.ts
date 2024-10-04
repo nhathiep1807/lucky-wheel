@@ -2,11 +2,11 @@ import axios, { AxiosError } from "axios";
 import cookie from "./utils/cookie";
 import { ACCESS_TOKEN } from "./constants/common";
 
+
 const axiosClient = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL,
     headers: {
         Accept: "application/json",
-        "Content-Type": "'Content-Type': 'multipart/form-data'",
     },
 });
 

@@ -29,6 +29,7 @@ const ImagePicker = ({ handleTakeFileImg }: Props) => {
             {selectedImage && (<div className="mt-2">
                 <img src={selectedImage} alt="Selected" className="w-40 h-40" />
             </div>)}
+            <div className="text-xs text-gray-400">* The name will not be displayed if there is an image</div>
         </div>
     );
 };

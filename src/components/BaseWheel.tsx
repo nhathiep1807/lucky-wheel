@@ -5,51 +5,10 @@ import { useTrackTime } from "@/hooks/useTrackTime";
 
 import EnergyRing from "./EnergyRing";
 import Confetti from "react-confetti";
-import { useGetListWheelItemQuery } from "@/hooks/wheel-items/useGetListWheelItem";
+import useSound from "use-sound";
+import { Prize } from "@/utils/functions";
 
-interface Prize {
-  text?: string;
-  color: string;
-  image?: string;
-  angle: number;
-}
-
-const prizes: Prize[] = [
-  { text: "10% Off Sticker Price", color: "hsl(197 30% 43%)", angle: 30 }, //34.8deg
-  { text: "No Money Down", color: "hsl(43 74% 66%)", angle: 40 },
-  { text: "Half Off Sticker Price", color: "hsl(27 87% 67%)", angle: 40 },
-  { text: "Free DIY Carwash", color: "hsl(12 76% 61%)", angle: 40 },
-  { text: "Free Car", color: "hsl(173 58% 39%)", angle: 30 },
-  { text: "Eternal Damnation", color: "hsl(350 60% 52%)", angle: 60 },
-  {
-    // text: "One Solid Hug",
-    image: "https://picsum.photos/200",
-    color: "hsl(140 11% 74%)",
-    angle: 20,
-  },
-  {
-    // text: "Used Travel Mug",
-    image: "https://picsum.photos/200",
-    color: "hsl(91 43% 54%)",
-    angle: 60,
-  },
-];
-
-function formatToPrizeArray(data: any[] | undefined): Prize[] {
-  const totalItems = data?.length;
-  if (data && totalItems) return data.map((item, index) => ({
-    text: item.name,
-    color: item.color,
-    image: item.img,
-    angle: 80
-  }));
-  return [{
-    color: '',
-    angle: 360
-  }]
-}
-
-const BaseWheel: React.FC = () => {
+const BaseWheel: React.FC<{ prizes: Prize[] }> = ({ prizes }) => {
   const { holdTime, isHolding, handleMouseDown, handleMouseUp } =
     useTrackTime();
 
@@ -62,11 +21,9 @@ const BaseWheel: React.FC = () => {
   const currentSliceRef = useRef<number>(0);
   const clickAudioRef = useRef<HTMLAudioElement>(null);
   const spinAudioRef = useRef<HTMLAudioElement>(null);
-  const powerUpAudioRef = useRef<HTMLAudioElement>(null);
 
-  const { data: listWheelItems, isLoading } = useGetListWheelItemQuery()
+  const [play, { stop }] = useSound("/sounds/power-up.mp3");
 
-  const prizes = formatToPrizeArray(listWheelItems?.data)
   const totalAngle = prizes.reduce((sum, prize) => sum + prize.angle, 0);
 
   const spinertia = (min: number, max: number) =>
@@ -134,7 +91,7 @@ const BaseWheel: React.FC = () => {
         prizeElement.appendChild(imgElement);
       }
 
-      if (text) {
+      if (text && !image) {
         const textElement = document.createElement("span");
         textElement.className = "text";
         textElement.textContent = text;
@@ -242,10 +199,14 @@ const BaseWheel: React.FC = () => {
     }
   }, [isSpinning, runTickerAnimation]);
 
+  useEffect(() => {
+    if (isHolding) play();
+    else stop();
+  }, [isHolding]);
+
   return (
     <div className="flex">
       <audio src="/sounds/spin.mp3" ref={spinAudioRef}></audio>
-      <audio src="/sounds/power-up.mp3" ref={powerUpAudioRef}></audio>
 
       <div className={twMerge("deal-wheel", isSpinning && "is-spinning")}>
         <ul
@@ -269,15 +230,12 @@ const BaseWheel: React.FC = () => {
         <audio src="/sounds/click.mp3" ref={clickAudioRef}></audio>
         <button
           onMouseDown={() => {
+            if (isSpinning) return;
             clickAudioRef.current?.play();
-            if (powerUpAudioRef.current) {
-              powerUpAudioRef.current.currentTime = 0;
-              powerUpAudioRef.current?.play();
-            }
             handleMouseDown();
           }}
           onMouseUp={() => {
-            powerUpAudioRef.current?.pause();
+            if (isSpinning) return;
             handleMouseUp();
             handleSpin();
           }}
@@ -287,7 +245,10 @@ const BaseWheel: React.FC = () => {
             handleSpin();
           }}
           disabled={isSpinning}
-          className="absolute group hover:active:scale-90 hover:scale-105 flex items-center justify-center w-10 h-10 font-bold -translate-x-1/2 -translate-y-1/2 bg-red-400 rounded-full shadow-2xl top-1/2 group md:w-16 md:h-16 lg:w-24 lg:h-24 left-1/2 transition-all duration-300"
+          className={twMerge(
+            isSpinning ? "select-none" : "hover:active:scale-90",
+            "absolute group hover:scale-105 flex items-center justify-center w-10 h-10 font-bold -translate-x-1/2 -translate-y-1/2 bg-red-400 rounded-full shadow-2xl top-1/2 group md:w-16 md:h-16 lg:w-24 lg:h-24 left-1/2 transition-all duration-300"
+          )}
         >
           {!isSpinning && !isHolding && (
             <span className="w-full h-full z-1 bg-red-300 rounded-full animate-ping-slow"></span>
@@ -319,7 +280,7 @@ const BaseWheel: React.FC = () => {
               <img
                 src={lastPrize?.image}
                 alt={lastPrize?.text}
-                className="w-full h-full object-cover aspect-video mb-6"
+                className="w-full h-full object-contain aspect-video mb-6 max-w-[50%] mx-auto"
               />
             )}
             <button
