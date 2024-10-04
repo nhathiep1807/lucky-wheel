@@ -38,12 +38,10 @@ type Color = {
 const UpdateWheelItemSchema = z.object({
     name: z.string().min(1, "Name must be at least 1 characters"),
     value: z.string().min(1, "Value must be at least 1 characters"),
-    categoryId: z.string(),
+    categoryId: z.any(),
     weight: z.any(),
     color: z.string(),
-    img: z.string(),
-    userName: z.string().min(1, "User Name must be at least 1 characters"),
-    userPhoneNumber: z.string().min(10, "Phone Number must be at least 10 characters"),
+    img: z.string()
 });
 
 type UpdateWheelItemsForm = z.infer<typeof UpdateWheelItemSchema>
@@ -71,8 +69,6 @@ function AdminBoard() {
             weight: '0',
             color: "",
             img: "",
-            userName: "",
-            userPhoneNumber: ""
         },
         resolver: zodResolver(UpdateWheelItemSchema),
     });
@@ -101,21 +97,22 @@ function AdminBoard() {
     }
 
     const onClickExecuteCreate = () => {
-        const { userPhoneNumber, userName } = getValues()
-        const data: TCreateNewUserResquest = {
-            phoneNumber: userPhoneNumber,
-            name: userName
-        }
-        createNewUser(data, {
-            onSuccess: () => {
-                toast.success('Create user is successfully!');
-                setIsCreateNew(false)
-            },
-            onError: (error: any) => {
-                const _error: TypeErrorResponse = error;
-                toast.error(error);
-            },
-        })
+        // const { userPhoneNumber, userName } = getValues()
+        // console.log('userPhoneNumber', userPhoneNumber, userName)
+        // const data: TCreateNewUserResquest = {
+        //     phoneNumber: userPhoneNumber,
+        //     name: userName
+        // }
+        // createNewUser(data, {
+        //     onSuccess: () => {
+        //         toast.success('Create user is successfully!');
+        //         setIsCreateNew(false)
+        //     },
+        //     onError: (error: any) => {
+        //         const _error: TypeErrorResponse = error;
+        //         toast.error(error);
+        //     },
+        // })
     }
 
     const onClickGetUser = () => {
@@ -216,59 +213,63 @@ function AdminBoard() {
                         name="userName"
                         type="text"
                         placeholder="Please input your name..."
+                        register={register}
+                    // error={formState.errors.userName?.message}
                     />
                     <Input
                         name="userPhoneNumber"
                         type="text"
                         placeholder="Please input your phone number..."
+                        register={register}
+                    // error={formState.errors.userPhoneNumber?.message}
                     />
                 </div>
             </Dialog>
             <Dialog open={isCustomItems} title="Update Items" setOpen={setIsCustomItems} actionButton={<div className='flex items-center gap-2 pt-4'><Button name="Cancel" onClick={onClickCancelCustomItems}></Button>
                 <Button name="Update" onClick={handleSubmit(onSubmit)} isLoading={isPending}></Button></div>}>
                 <div className='grid gap-3'>
-                    <Input
-                        label='Name'
-                        name="name"
-                        type="text"
-                        placeholder="Please input name!"
-                        register={register}
-                        error={formState.errors.name?.message}
-                    />
-                    <div className='flex w-full gap-2'>
+                    <form>
                         <Input
-                            label='Value'
-                            name="value"
+                            label='Name'
+                            name="name"
                             type="text"
-                            placeholder="Please input value!"
+                            placeholder="Please input name!"
                             register={register}
-                            error={formState.errors.value?.message}
+                            error={formState.errors.name?.message}
                         />
-                        <Input
-                            label='Weight'
-                            name="weight"
-                            type="number"
+                        <div className='flex w-full gap-2'>
+                            <Input
+                                label='Value'
+                                name="value"
+                                type="text"
+                                placeholder="Please input value!"
+                                register={register}
+                                error={formState.errors.value?.message}
+                            />
+                            <Input
+                                label='Weight'
+                                name="weight"
+                                type="number"
+                                register={register}
+                            />
+                        </div>
+                        <Select
+                            label='Categories'
+                            name="categoryId"
+                            placeholder="Select category"
                             register={register}
-                        // error={formState.errors.weight?.message}
+                            options={[{ value: '1', label: 'point' }, { value: '2', label: 'gift' }]}
                         />
-                    </div>
-                    <Select
-                        label='Categories'
-                        name="categoryId"
-                        placeholder="Select category"
-                        register={register}
-                        defaultValue={selectedItem?.categoryId}
-                        options={[{ value: '1', label: 'point' }, { value: '2', label: 'gift' }]}
-                    />
-                    <div>
-                        <label className="block text-sm font-semibold text-gray-700">Select color</label>
-                        <InputColor
-                            initialValue="#000000"
-                            onChange={setColor}
-                            placement="right"
-                        />
-                    </div>
-                    <ImagePicker handleTakeFileImg={handleTakeFileImg} />
+                        <div>
+                            <label className="block text-sm font-semibold text-gray-700">Select color</label>
+                            <InputColor
+                                initialValue={selectedItem?.color || '#000000'}
+                                onChange={setColor}
+                                placement="right"
+                            />
+                        </div>
+                        <ImagePicker handleTakeFileImg={handleTakeFileImg} />
+                    </form>
                 </div>
             </Dialog>
         </div>
