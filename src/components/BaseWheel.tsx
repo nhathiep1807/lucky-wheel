@@ -6,39 +6,9 @@ import { useTrackTime } from "@/hooks/useTrackTime";
 import EnergyRing from "./EnergyRing";
 import Confetti from "react-confetti";
 import useSound from "use-sound";
+import { Prize } from "@/utils/functions";
 
-interface Prize {
-  text?: string;
-  color: string;
-  image?: string;
-  angle: number;
-}
-
-const prizes: Prize[] = [
-  {
-    // text: "10% Off Sticker Price",
-    color: "#ffffff",
-    image: "/images/gift.png",
-    angle: 30,
-  }, //34.8deg
-  { text: "No Money Down", color: "#72a5e4", angle: 40 },
-  { text: "Half Off Sticker Price", color: "#FFB832", angle: 40 },
-  { text: "Free DIY Carwash", color: "#98BEAB", angle: 40 },
-  { color: "#ffffff", image: "/images/gift.png", angle: 30 },
-  { text: "Eternal Damnation", color: "#72a5e4", angle: 60 },
-  {
-    text: "One Solid Hug",
-    color: "#FFB832",
-    angle: 20,
-  },
-  {
-    text: "Used Travel Mug",
-    color: "#98BEAB",
-    angle: 60,
-  },
-];
-
-const BaseWheel: React.FC = () => {
+const BaseWheel: React.FC<{ prizes: Prize[] }> = ({ prizes }) => {
   const { holdTime, isHolding, handleMouseDown, handleMouseUp } =
     useTrackTime();
 
@@ -121,7 +91,7 @@ const BaseWheel: React.FC = () => {
         prizeElement.appendChild(imgElement);
       }
 
-      if (text) {
+      if (text && !image) {
         const textElement = document.createElement("span");
         textElement.className = "text";
         textElement.textContent = text;
@@ -143,9 +113,8 @@ const BaseWheel: React.FC = () => {
     prizes.forEach(({ color, angle }, index) => {
       const startAngle = currentAngle;
       const endAngle = currentAngle + (angle * 360) / totalAngle;
-      gradientString += `${color} ${startAngle}deg ${endAngle}deg${
-        index < prizes.length - 1 ? "," : ")"
-      }`;
+      gradientString += `${color} ${startAngle}deg ${endAngle}deg${index < prizes.length - 1 ? "," : ")"
+        }`;
       currentAngle = endAngle;
     });
 

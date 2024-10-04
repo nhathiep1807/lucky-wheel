@@ -54,7 +54,7 @@ const DynamicInput = () => {
             formData.append('name', item.name)
             formData.append('value', item.value)
             formData.append('color', '#ffffff')
-            formData.append('catergoryId', '1')
+            formData.append('categoryId', '2')
             // formData.append('img', 'https://firebasestorage.googleapis.com/v0/b/random-wheel-e989a.appspot.com/o/images%2F25?alt=media&token=5c1e907a-e705-42ca-934c-37949b1c96d5')
             //call API here
             item.isLoading = true
@@ -86,9 +86,9 @@ const DynamicInput = () => {
     return (
         <div className="space-y-4">
             <button className="flex items-center gap-1" type="button" onClick={addNewInput}>
-                <PlusIcon className="text-black w-4 h-4" /> Add item
+                <PlusIcon className="text-black w-4 h-4" /><span className='font-semibold'>Add Item</span>
             </button>
-            <div className='border max-h-[200px] min-h-[200px] overflow-y-auto'>
+            <div className='border max-h-[120px] min-h-[120px] overflow-y-auto'>
                 {items.map((item) => (
                     <div key={item.id} className="flex items-center space-x-2 p-2">
                         <div className="flex items-baseline space-x-2">

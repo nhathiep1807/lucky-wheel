@@ -13,6 +13,40 @@ import { Select } from '../select';
 import InputColor from 'react-input-color';
 import { ImagePicker } from '../image-picker';
 import { ListItem } from '../list-item';
+import { TCreateWheelItemResponse } from '@/types/wheelItems';
+import * as z from "zod";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useUpdateWheelItemMutation } from '@/hooks/wheel-items/useUpdateWheelItem';
+import toast from 'react-hot-toast';
+import { TypeErrorResponse } from '@/types/common';
+import { useCreateNewUserMutation } from '@/hooks/users/useCreateNewUser';
+import { TCreateNewUserResquest } from '@/types/user';
+
+type Color = {
+    h: number;
+    s: number;
+    v: number;
+    r: number;
+    g: number;
+    b: number;
+    a: number;
+    hex: string;
+    rgba: string;
+}
+
+const UpdateWheelItemSchema = z.object({
+    name: z.string().min(1, "Name must be at least 1 characters"),
+    value: z.string().min(1, "Value must be at least 1 characters"),
+    categoryId: z.string(),
+    weight: z.any(),
+    color: z.string(),
+    img: z.string(),
+    userName: z.string().min(1, "User Name must be at least 1 characters"),
+    userPhoneNumber: z.string().min(10, "Phone Number must be at least 10 characters"),
+});
+
+type UpdateWheelItemsForm = z.infer<typeof UpdateWheelItemSchema>
 
 function AdminBoard() {
     const router = useRouter();
@@ -20,9 +54,29 @@ function AdminBoard() {
     const [isAdd, setIsAdd] = useState<boolean>(false)
     const [isCreateNew, setIsCreateNew] = useState<boolean>(false)
     const [isCustomItems, setIsCustomItems] = useState<boolean>(false)
-    const [color, setColor] = useState({});
+    const [selectedItem, setSelectedItem] = useState<TCreateWheelItemResponse>()
+    const [color, setColor] = useState<Color>();
+    const [imgFile, setImgFile] = useState<File>()
+
+    const { mutate: updateWheelItem, isPending } = useUpdateWheelItemMutation()
+    const { mutate: createNewUser, isPending: isLoadingCreateNewUser } = useCreateNewUserMutation()
 
     const { userInfo, reset } = useContext(GlobalContext);
+
+    const { handleSubmit, register, formState, setValue, getValues } = useForm<UpdateWheelItemsForm>({
+        defaultValues: {
+            name: "",
+            value: "",
+            categoryId: "",
+            weight: '0',
+            color: "",
+            img: "",
+            userName: "",
+            userPhoneNumber: ""
+        },
+        resolver: zodResolver(UpdateWheelItemSchema),
+    });
+
 
     const onClickAddUser = () => {
         setIsOpenDialog(true)
@@ -46,7 +100,27 @@ function AdminBoard() {
         setIsCreateNew(false)
     }
 
-    const onClickExecuteCreate = () => { }
+    const onClickExecuteCreate = () => {
+        const { userPhoneNumber, userName } = getValues()
+        const data: TCreateNewUserResquest = {
+            phoneNumber: userPhoneNumber,
+            name: userName
+        }
+        createNewUser(data, {
+            onSuccess: () => {
+                toast.success('Create user is successfully!');
+                setIsCreateNew(false)
+            },
+            onError: (error: any) => {
+                const _error: TypeErrorResponse = error;
+                toast.error(error);
+            },
+        })
+    }
+
+    const onClickGetUser = () => {
+
+    }
 
     const onClickLogout = () => {
         cookie.delete("accessToken");
@@ -54,35 +128,71 @@ function AdminBoard() {
         router.push("/login");
     }
 
-    const onClickCustomItems = () => {
+    const onClickCustomItems = (item: TCreateWheelItemResponse) => {
         setIsCustomItems(true)
+        setSelectedItem(item)
+        setValue('name', item.name)
+        setValue('value', item.value.toString())
+        setValue('categoryId', item.categoryId)
+        setValue('weight', item.weight)
+        setColor({ hex: item.color } as Color)
     }
 
-    const onClickUpdateItem = () => {
+    const onSubmit = (data: UpdateWheelItemsForm) => {
+        let formData = new FormData()
 
+        if (selectedItem) {
+            formData.append('id', selectedItem.id.toString());
+        } else {
+            toast.error('No item selected');
+        }
+        formData.append('name', data.name)
+        formData.append('value', data.value)
+        formData.append('color', color?.hex ?? '')
+        formData.append('categoryId', data.categoryId)
+        formData.append('weight', data.weight)
+        if (imgFile) {
+            formData.append('file', imgFile);
+        } else {
+            console.error('No file selected');
+        }
+        updateWheelItem(formData, {
+            onSuccess: () => {
+                toast.success('Update wheel item success!');
+                setIsCustomItems(false)
+            },
+            onError: (error: any) => {
+                const _error: TypeErrorResponse = error;
+                toast.error(error);
+            },
+        })
     }
 
     const onClickCancelCustomItems = () => {
         setIsCustomItems(false)
     }
 
+    const handleTakeFileImg = (file: File) => {
+        setImgFile(file)
+    }
+
 
     return (
         <div>
             <div className='flex justify-between items-center p-4 border-b'>
-                <h3 className='ml-8 font-bold text-xl'>{userInfo?.phoneNumber}</h3>
+                <h3 className='ml-8 font-bold text-xl'>{userInfo?.name.toUpperCase()}</h3>
                 <div className='flex gap-2'>
                     <Button name='Logout' onClick={onClickLogout} />
                 </div>
 
             </div>
             <div className='flex justify-between px-4 pt-4 gap-2'>
-                <Button name='Custom Items' onClick={onClickCustomItems} />
+                {/* <Button name='Custom Items' onClick={onClickCustomItems} /> */}
                 <Button name='Add Player' onClick={onClickAddUser} />
             </div>
             <div className='p-4 max-h-[500px] min-h-[500px] border-b'>
                 <DynamicInput />
-                <ListItem />
+                <ListItem handleUpdateWheelItem={onClickCustomItems} />
             </div>
             <EditableText initialText='Please input your rule here!' />
             <Dialog open={isOpenDialog} title="Are you have an account ?" setOpen={setIsOpenDialog} actionButton={<div className='flex items-center gap-2 py-2'><Button name="Yes" onClick={onClickAddAccount}></Button>
@@ -91,7 +201,7 @@ function AdminBoard() {
                     please provide us with your information!</div>
             </Dialog>
             <Dialog open={isAdd} title="Your account" setOpen={setIsAdd} actionButton={<div className='flex items-center gap-2 pt-4'><Button name="Cancel" onClick={onClickCancelAdd}></Button>
-                <Button name="Add" onClick={onClickExecuteCreate}></Button></div>}>
+                <Button name="Add" onClick={onClickGetUser}></Button></div>}>
                 <Input
                     name="phone"
                     type="text"
@@ -99,46 +209,56 @@ function AdminBoard() {
                 />
             </Dialog>
             <Dialog open={isCreateNew} title="Your account" setOpen={setIsCreateNew} actionButton={<div className='flex items-center gap-2 pt-4'><Button name="Cancel" onClick={onClickCancelCreatNew}></Button>
-                <Button name="Add" onClick={onClickExecuteCreate}></Button></div>}>
+                <Button name="Add" onClick={onClickExecuteCreate} isLoading={isLoadingCreateNewUser}></Button></div>}>
                 <div>
                     <Input
                         className='pb-2'
-                        name="name"
+                        name="userName"
                         type="text"
                         placeholder="Please input your name..."
                     />
                     <Input
-                        name="phone"
+                        name="userPhoneNumber"
                         type="text"
-                        placeholder="Please input your mobilephone..."
+                        placeholder="Please input your phone number..."
                     />
                 </div>
-
             </Dialog>
             <Dialog open={isCustomItems} title="Update Items" setOpen={setIsCustomItems} actionButton={<div className='flex items-center gap-2 pt-4'><Button name="Cancel" onClick={onClickCancelCustomItems}></Button>
-                <Button name="Update" onClick={onClickUpdateItem}></Button></div>}>
+                <Button name="Update" onClick={handleSubmit(onSubmit)} isLoading={isPending}></Button></div>}>
                 <div className='grid gap-3'>
-                    <Select
-                        label='Name'
-                        name="item"
-                        placeholder="Select item"
-                        defaultValue=""
-                        options={[{ value: '10', label: '10 cuc da' }, { value: '20', label: '20 cuc da' }]}
-                    // error={formState.errors.category?.message}
-                    />
                     <Input
-                        label='Value'
-                        name="value"
+                        label='Name'
+                        name="name"
                         type="text"
-                        placeholder="Please input value!"
+                        placeholder="Please input name!"
+                        register={register}
+                        error={formState.errors.name?.message}
                     />
+                    <div className='flex w-full gap-2'>
+                        <Input
+                            label='Value'
+                            name="value"
+                            type="text"
+                            placeholder="Please input value!"
+                            register={register}
+                            error={formState.errors.value?.message}
+                        />
+                        <Input
+                            label='Weight'
+                            name="weight"
+                            type="number"
+                            register={register}
+                        // error={formState.errors.weight?.message}
+                        />
+                    </div>
                     <Select
                         label='Categories'
-                        name="categories"
+                        name="categoryId"
                         placeholder="Select category"
-                        defaultValue=""
-                        options={[{ value: '1', label: 'point' }, { value: '1', label: 'gift' }]}
-                    // error={formState.errors.category?.message}
+                        register={register}
+                        defaultValue={selectedItem?.categoryId}
+                        options={[{ value: '1', label: 'point' }, { value: '2', label: 'gift' }]}
                     />
                     <div>
                         <label className="block text-sm font-semibold text-gray-700">Select color</label>
@@ -146,13 +266,10 @@ function AdminBoard() {
                             initialValue="#000000"
                             onChange={setColor}
                             placement="right"
-
                         />
                     </div>
-
-                    <ImagePicker />
+                    <ImagePicker handleTakeFileImg={handleTakeFileImg} />
                 </div>
-
             </Dialog>
         </div>
     )

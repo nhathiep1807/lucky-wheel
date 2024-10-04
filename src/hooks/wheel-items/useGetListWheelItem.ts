@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export const useGetListWheelItemQuery = () => {
     return useQuery({
-        queryKey: ["items"],
-        queryFn: () => wheelItemsApi.getWheelItems,
+        queryKey: ["wheelItems"],
+        queryFn: () => wheelItemsApi.getWheelItems(),
     });
 };
