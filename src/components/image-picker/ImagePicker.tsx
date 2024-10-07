@@ -1,12 +1,13 @@
 import { XCircleIcon } from "@heroicons/react/24/outline";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type Props = {
   defaultImage?: string;
   handleTakeFileImg: (file: File) => void;
+  onImageChange: (imageUrl: string | null) => void;
 };
 
-const ImagePicker = ({ defaultImage, handleTakeFileImg }: Props) => {
+const ImagePicker = ({ defaultImage, handleTakeFileImg, onImageChange }: Props) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(
     defaultImage || ""
   );
@@ -26,9 +27,14 @@ const ImagePicker = ({ defaultImage, handleTakeFileImg }: Props) => {
     }
   };
 
+
   const handleRemoveImage = () => {
     setSelectedImage(null);
   };
+
+  useEffect(() => {
+    onImageChange(selectedImage);
+  }, [selectedImage, onImageChange]);
 
   return (
     <div>

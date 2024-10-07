@@ -54,9 +54,7 @@ const DynamicInput = () => {
             formData.append('name', item.name)
             formData.append('value', item.value)
             formData.append('color', '#ffffff')
-            formData.append('categoryId', '2')
-            // formData.append('img', 'https://firebasestorage.googleapis.com/v0/b/random-wheel-e989a.appspot.com/o/images%2F25?alt=media&token=5c1e907a-e705-42ca-934c-37949b1c96d5')
-            //call API here
+            formData.append('categoryId', '1')
             item.isLoading = true
             creacreateWheelItem(formData,
                 {
