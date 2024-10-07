@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export const useGetUserQuery = ({ phone }: { phone: string }) => {
     return useQuery<TBaseResponse<any>, Error, TBaseResponse<TPlayer>>({
-        queryKey: ["activities", phone],
+        queryKey: ["player", phone],
         queryFn: () => userApi.getUserByPhone(phone),
         refetchOnWindowFocus: false,
         enabled: !!phone

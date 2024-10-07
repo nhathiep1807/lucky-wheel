@@ -114,9 +114,8 @@ const BaseWheel: React.FC<{ prizes: Prize[] }> = ({ prizes }) => {
     prizes.forEach(({ color, angle }, index) => {
       const startAngle = currentAngle;
       const endAngle = currentAngle + (angle * 360) / totalAngle;
-      gradientString += `${color} ${startAngle}deg ${endAngle}deg${
-        index < prizes.length - 1 ? "," : ")"
-      }`;
+      gradientString += `${color} ${startAngle}deg ${endAngle}deg${index < prizes.length - 1 ? "," : ")"
+        }`;
       currentAngle = endAngle;
     });
 

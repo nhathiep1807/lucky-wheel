@@ -36,7 +36,7 @@ function ListItem({ handleUpdateWheelItem }: Props) {
         <QueueListIcon className="w-5 h-5" />
         <span className="font-semibold">List Item</span>
       </div>
-      <div className="relative border max-h-[250px] min-h-[250px] overflow-y-auto">
+      <div className="relative border max-h-[400px] min-h-[400px] overflow-y-auto">
         {isLoading ? (
           <Loader className="absolute top-1/2 left-1/2" />
         ) : (

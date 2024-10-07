@@ -23,9 +23,10 @@ export default function Wheel() {
       </Drawer>
       <ClientBoardMemo />
       <div className="flex flex-col items-center justify-center w-full gap-14">
-        <p className="text-3xl font-semibold text-gray-600">
+        <p className="text-[40px] text-3xl font-semibold bg-clip-text text-transparent animate-text">
           Hold Down, Speed Up—Your Next Drink Awaits!
         </p>
+
         <BaseWheelMemo prizes={prizes} />
       </div>
     </div>
