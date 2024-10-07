@@ -32,15 +32,7 @@ export default function EnergyRing({
           <stop offset="100%" stopColor="#00ff00" />
         </linearGradient>
       </defs>
-      {/* <circle
-        cx="50"
-        cy="50"
-        r="49"
-        fill="none"
-        stroke="#e5e5e5"
-        strokeWidth={()}
-      /> */}
-      {/* {isHolding && ( */}
+
       <circle
         cx="50"
         cy="50"
@@ -57,7 +49,6 @@ export default function EnergyRing({
           opacity: isHolding || progress > 0 ? 1 : 0,
         }}
       />
-      {/* )} */}
     </svg>
   );
 }
