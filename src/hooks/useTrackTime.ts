@@ -12,7 +12,7 @@ export const useTrackTime = () => {
     timerRef.current = window.setInterval(() => {
       if (Date.now() - startTimeRef.current > 5000) {
         setHoldTime(5000);
-        setIsHolding(false);
+        // setIsHolding(false);
         window.clearInterval(timerRef.current || undefined);
       }
       setHoldTime(Date.now() - startTimeRef.current);
