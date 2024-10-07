@@ -7,6 +7,7 @@ import EnergyRing from "./EnergyRing";
 import Confetti from "react-confetti";
 import useSound from "use-sound";
 import { Prize } from "@/utils/functions";
+import { Dialog } from "@headlessui/react";
 
 const BaseWheel: React.FC<{ prizes: Prize[] }> = ({ prizes }) => {
   const { holdTime, isHolding, handleMouseDown, handleMouseUp } =
@@ -113,8 +114,9 @@ const BaseWheel: React.FC<{ prizes: Prize[] }> = ({ prizes }) => {
     prizes.forEach(({ color, angle }, index) => {
       const startAngle = currentAngle;
       const endAngle = currentAngle + (angle * 360) / totalAngle;
-      gradientString += `${color} ${startAngle}deg ${endAngle}deg${index < prizes.length - 1 ? "," : ")"
-        }`;
+      gradientString += `${color} ${startAngle}deg ${endAngle}deg${
+        index < prizes.length - 1 ? "," : ")"
+      }`;
       currentAngle = endAngle;
     });
 
@@ -259,12 +261,12 @@ const BaseWheel: React.FC<{ prizes: Prize[] }> = ({ prizes }) => {
         </button>
       </div>
 
-      {lastPrize && (
-        <div
-          className={twMerge(
-            "fixed top-0 left-0 w-full h-full z-[999] flex items-center justify-center"
-          )}
-        >
+      <Dialog
+        open={!!lastPrize}
+        onClose={() => setLastPrize(null)}
+        className="relative z-[1000]"
+      >
+        <div className="fixed inset-0 z-10 w-screen overflow-y-auto flex items-center justify-center">
           <audio src="/sounds/cheer.mp3" autoPlay />
 
           <Confetti width={3000} height={3000} />
@@ -276,7 +278,7 @@ const BaseWheel: React.FC<{ prizes: Prize[] }> = ({ prizes }) => {
             <p className="text-4xl font-medium text-red-400 text-center mb-10">
               {lastPrize?.text}
             </p>
-            {lastPrize.image && (
+            {lastPrize?.image && (
               <img
                 src={lastPrize?.image}
                 alt={lastPrize?.text}
@@ -293,7 +295,7 @@ const BaseWheel: React.FC<{ prizes: Prize[] }> = ({ prizes }) => {
             </button>
           </div>
         </div>
-      )}
+      </Dialog>
     </div>
   );
 };
