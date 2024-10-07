@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 type Props = {
   defaultImage?: string;
   handleTakeFileImg: (file: File) => void;
-  onImageChange: (imageUrl: string | null) => void;
+  onImageChange?: (imageUrl: string | null) => void;
 };
 
 const ImagePicker = ({ defaultImage, handleTakeFileImg, onImageChange }: Props) => {
@@ -23,7 +23,6 @@ const ImagePicker = ({ defaultImage, handleTakeFileImg, onImageChange }: Props) 
       };
 
       reader.readAsDataURL(file);
-      console.log("selected image", file);
     }
   };
 
@@ -33,7 +32,7 @@ const ImagePicker = ({ defaultImage, handleTakeFileImg, onImageChange }: Props) 
   };
 
   useEffect(() => {
-    onImageChange(selectedImage);
+    onImageChange?.(selectedImage);
   }, [selectedImage, onImageChange]);
 
   return (

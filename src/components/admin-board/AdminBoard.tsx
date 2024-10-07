@@ -25,6 +25,9 @@ import { TCreateNewUserResquest } from '@/types/user';
 import { useCreateNewUserForm } from '@/hooks/users/useCreateNewUserForm';
 import { useGetUserByPhoneForm } from '@/hooks/users/useGetUserByPhoneForm';
 import { useGetUserQuery } from '@/hooks/users/useGetUserByPhone';
+import { PlusIcon } from "@heroicons/react/24/outline";
+import { useCreateWheelItemMutation } from "@/hooks/wheel-items/useCreateWheelItem";
+import CreateNewItem from "./CreateNewItem";
 
 type Color = {
     h: number;
@@ -162,7 +165,6 @@ function AdminBoard() {
             toast.error("No item selected");
         }
 
-        console.log('selectedImage', selectedImage)
         formData.append("name", data.name);
         formData.append("value", data.value);
         formData.append("color", color?.hex ?? "");
@@ -219,12 +221,12 @@ function AdminBoard() {
                     <Button name="Logout" onClick={onClickLogout} />
                 </div>
             </div>
-            <div className="flex justify-between px-4 pt-4 gap-2">
-                {/* <Button name='Custom Items' onClick={onClickCustomItems} /> */}
+            <div className="flex px-4 pt-4 gap-2">
+                <CreateNewItem />
                 <Button name="Add Player" onClick={onClickAddUser} />
             </div>
             <div className="p-4 max-h-[500px] min-h-[500px] border-b">
-                <DynamicInput />
+                {/* <DynamicInput /> */}
                 <ListItem handleUpdateWheelItem={onClickCustomItems} />
             </div>
             <EditableText initialText='Please input your rule here!' />

@@ -26,7 +26,7 @@ const Drawer = ({ className, children }: PropsWithChildren<DrawerProps>) => {
             >
                 {isOpen ? <ChevronDoubleRightIcon className="text-black w-4 h-8" /> : <ChevronDoubleLeftIcon className="text-black w-4 h-8" />}
             </button>
-            <div className={`${isOpen ? "w-[400px]" : "w-10"}`}>
+            <div className={`${isOpen ? "w-[400px]" : "w-10"} overflow-y-auto`}>
                 {isOpen ? children : <div></div>}
             </div>
         </div>

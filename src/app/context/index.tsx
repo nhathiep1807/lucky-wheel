@@ -75,7 +75,6 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
 
     useLayoutEffect(() => {
         if (playerInfo && playerInfo !== null) {
-            console.log('playerInfo', playerInfo)
             localStorage.setItem(PLAYER_INFO, JSON.stringify(playerInfo));
         }
     }, [playerInfo]);
