@@ -228,10 +228,9 @@ function AdminBoard() {
                 <ListItem handleUpdateWheelItem={onClickCustomItems} />
             </div>
             <EditableText initialText='Please input your rule here!' />
-            <Dialog open={isOpenDialog} title="Do you have any account?" setOpen={setIsOpenDialog} actionButton={<div className='flex items-center gap-2 py-2'><Button name="Yes" onClick={onClickAddAccount}></Button>
-                <Button name="Create New" onClick={onClickCreateNewAccount}></Button></div>}>
-                <div>If you want to accumulate points for yourself,
-                    please provide us with your information!</div>
+            <Dialog open={isOpenDialog} title="Ready to win big?" setOpen={setIsOpenDialog} actionButton={<div className='flex items-center gap-2 py-2'><Button name="Access my account" onClick={onClickAddAccount}></Button>
+                <Button name="Create account now" onClick={onClickCreateNewAccount}></Button></div>}>
+                <div>Start collecting points and earning rewards!</div>
             </Dialog>
             <Dialog open={isAdd} title="Your account" setOpen={setIsAdd} actionButton={<div className='flex items-center gap-2 pt-4'><Button name="Cancel" onClick={onClickCancelAdd}></Button>
                 <Button name="Add" onClick={submitGetUser(onClickGetUser)} isLoading={isLoading}></Button></div>}>
