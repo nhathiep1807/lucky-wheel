@@ -4,17 +4,18 @@ import {
   QueueListIcon,
   XCircleIcon,
   PencilSquareIcon,
-  PlusIcon
+  PlusIcon,
 } from "@heroicons/react/24/outline";
 import { useDeleteWheelItemMutation } from "@/hooks/wheel-items/useDeleteWheelItem";
 import toast from "react-hot-toast";
 import { TypeErrorResponse } from "@/types/common";
 import { Loader } from "../loader";
 import { TCreateWheelItemResponse } from "@/types/wheelItems";
+import CreateNewItem from "../admin-board/CreateNewItem";
 
 type Props = {
   handleUpdateWheelItem: (item: TCreateWheelItemResponse) => void;
-  handleOpenCreateNewItem: React.Dispatch<React.SetStateAction<boolean>>
+  handleOpenCreateNewItem: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 function ListItem({ handleUpdateWheelItem, handleOpenCreateNewItem }: Props) {
@@ -70,7 +71,10 @@ function ListItem({ handleUpdateWheelItem, handleOpenCreateNewItem }: Props) {
             ))}
           </div>
         )}
-        <div className="w-full h-10 absolute sticky bottom-0 left-0 bg-gray-100 flex justify-center items-center cursor-pointer gap-1" onClick={() => handleOpenCreateNewItem(true)}>
+        <div
+          className="w-full h-10 sticky bottom-0 left-0 bg-gray-100 flex justify-center items-center cursor-pointer gap-1"
+          onClick={() => handleOpenCreateNewItem(true)}
+        >
           <PlusIcon className="w-4 h-4" />
           <span>Add Item</span>
         </div>
