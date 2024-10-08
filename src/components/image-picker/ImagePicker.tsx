@@ -1,5 +1,5 @@
-import { XCircleIcon } from "@heroicons/react/24/outline";
-import React, { useEffect, useState } from "react";
+import { ArrowUpTrayIcon, XCircleIcon } from "@heroicons/react/24/outline";
+import React, { useEffect, useRef, useState } from "react";
 
 type Props = {
   defaultImage?: string;
@@ -7,7 +7,12 @@ type Props = {
   onImageChange?: (imageUrl: string | null) => void;
 };
 
-const ImagePicker = ({ defaultImage, handleTakeFileImg, onImageChange }: Props) => {
+const ImagePicker = ({
+  defaultImage,
+  handleTakeFileImg,
+  onImageChange,
+}: Props) => {
+  const pickerRef = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(
     defaultImage || ""
   );
@@ -26,6 +31,11 @@ const ImagePicker = ({ defaultImage, handleTakeFileImg, onImageChange }: Props) 
     }
   };
 
+  const _handlePickImage = () => {
+    if (pickerRef.current) {
+      pickerRef.current.click();
+    }
+  };
 
   const handleRemoveImage = () => {
     setSelectedImage(null);
@@ -44,15 +54,28 @@ const ImagePicker = ({ defaultImage, handleTakeFileImg, onImageChange }: Props) 
         {" "}
         Select an image:{" "}
       </label>
+      <button
+        type="button"
+        className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg p-2 text-sm"
+        onClick={_handlePickImage}
+      >
+        <ArrowUpTrayIcon className="w-4 h-4" /> Upload image
+      </button>
       <input
+        ref={pickerRef}
         type="file"
         id="image-input"
         accept="image/*"
+        hidden={true}
         onChange={handleImageChange}
       />
       {selectedImage && (
         <div className="mt-2 relative w-fit">
-          <img src={selectedImage} alt="Selected" className="w-40 h-40" />
+          <img
+            src={selectedImage}
+            alt="Selected"
+            className="w-40 h-40 object-cover"
+          />
           <XCircleIcon
             className="absolute top-0 right-0 w-6 h-6 cursor-pointer"
             onClick={handleRemoveImage}
