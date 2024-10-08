@@ -1,8 +1,10 @@
 import { GlobalContext } from '@/app/context';
+import { useGetRankingMutation } from '@/hooks/users/useGetRanking';
 import React, { useContext } from 'react'
 
 function ClientBoard() {
     const { playerInfo } = useContext(GlobalContext);
+    const { mutate: getRanking, isPending } = useGetRankingMutation()
 
     return (
         <div className='fixed top-20 left-0'>
@@ -14,12 +16,12 @@ function ClientBoard() {
                     {playerInfo ? <h3 className="text-black">Points: <span className="font-medium">{playerInfo?.totalPoints}</span></h3> : null}
                     <div className='border my-6'></div>
                     <h2 className="font-semibold text-3xl text-yellow-500 italic underline">Ranking</h2>
-                    {/* <ol className='text-white list-decimal p-4' type='1'>
+                    <ol className='text-black list-decimal p-4' type='1'>
                         <li>Christian Di</li>
                         <li>Selena Contana</li>
                         <li>Justin Charles</li>
                         <li>Jame Sandy</li>
-                    </ol> */}
+                    </ol>
                 </div>
             </div>
         </div>

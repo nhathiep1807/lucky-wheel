@@ -4,6 +4,7 @@ import {
   QueueListIcon,
   XCircleIcon,
   PencilSquareIcon,
+  PlusIcon
 } from "@heroicons/react/24/outline";
 import { useDeleteWheelItemMutation } from "@/hooks/wheel-items/useDeleteWheelItem";
 import toast from "react-hot-toast";
@@ -13,9 +14,10 @@ import { TCreateWheelItemResponse } from "@/types/wheelItems";
 
 type Props = {
   handleUpdateWheelItem: (item: TCreateWheelItemResponse) => void;
+  handleOpenCreateNewItem: React.Dispatch<React.SetStateAction<boolean>>
 };
 
-function ListItem({ handleUpdateWheelItem }: Props) {
+function ListItem({ handleUpdateWheelItem, handleOpenCreateNewItem }: Props) {
   const { data: listWheelItems, isLoading } = useGetListWheelItemQuery();
   const { mutate: deleteWheelItem } = useDeleteWheelItemMutation();
 
@@ -36,11 +38,11 @@ function ListItem({ handleUpdateWheelItem }: Props) {
         <QueueListIcon className="w-5 h-5" />
         <span className="font-semibold">List Item</span>
       </div>
-      <div className="relative border max-h-[400px] min-h-[400px] overflow-y-auto">
+      <div className="relative border">
         {isLoading ? (
           <Loader className="absolute top-1/2 left-1/2" />
         ) : (
-          <div>
+          <div className="max-h-[350px] min-h-[350px] overflow-y-auto">
             {listWheelItems?.data.map((item, _index) => (
               <div
                 key={item.id}
@@ -68,6 +70,10 @@ function ListItem({ handleUpdateWheelItem }: Props) {
             ))}
           </div>
         )}
+        <div className="w-full h-10 absolute sticky bottom-0 left-0 bg-gray-100 flex justify-center items-center cursor-pointer gap-1" onClick={() => handleOpenCreateNewItem(true)}>
+          <PlusIcon className="w-4 h-4" />
+          <span>Add Item</span>
+        </div>
       </div>
     </div>
   );

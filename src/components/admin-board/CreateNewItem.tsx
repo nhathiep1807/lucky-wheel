@@ -36,19 +36,23 @@ const CreateWheelItemSchema = z.object({
 
 type CreateWheelItemsForm = z.infer<typeof CreateWheelItemSchema>;
 
-function CreateNewItem() {
-    const [isOpenCreateNew, setIsOpenCreateNew] = useState<boolean>(false)
+type Props = {
+    isOpen: boolean,
+    handleIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+function CreateNewItem({ isOpen, handleIsOpen }: Props) {
     const [color, setColor] = useState<Color>();
     const [imgFile, setImgFile] = useState<File>()
 
     const { mutate: creacreateWheelItem, isPending: isPendingCreateNewItem } = useCreateWheelItemMutation()
 
 
-    const { handleSubmit, register, formState, setValue } = useForm<CreateWheelItemsForm>({
+    const { handleSubmit, register, formState, reset } = useForm<CreateWheelItemsForm>({
         defaultValues: {
             name: "",
             value: "",
-            categoryId: "",
+            categoryId: "1",
             weight: '0',
             color: "",
             img: "",
@@ -57,7 +61,7 @@ function CreateNewItem() {
     });
 
     const handleOpenCreateNew = () => {
-        setIsOpenCreateNew(true)
+        handleIsOpen(true)
     }
 
     const handleTakeFileImg = (file: File) => {
@@ -65,7 +69,7 @@ function CreateNewItem() {
     };
 
     const handleClickCancelCreateNewItem = () => {
-        setIsOpenCreateNew(false)
+        handleIsOpen(false)
     }
 
     const onSubmit = (data: CreateWheelItemsForm) => {
@@ -80,8 +84,9 @@ function CreateNewItem() {
             {
                 onSuccess: (data) => {
                     toast.success('Create wheel item success!');
-                    setIsOpenCreateNew(false)
+                    handleIsOpen(false)
                     setImgFile(undefined)
+                    reset()
                 },
                 onError: (error: any) => {
                     const _error: TypeErrorResponse = error;
@@ -91,8 +96,8 @@ function CreateNewItem() {
     }
     return (
         <div>
-            <Button name="Add Item" onClick={handleOpenCreateNew}></Button>
-            <Dialog open={isOpenCreateNew} title="Create New Item" setOpen={setIsOpenCreateNew} actionButton={<div className='flex items-center gap-2 pt-4'><Button name="Cancel" onClick={handleClickCancelCreateNewItem}></Button>
+            {/* <Button name="Add Item" onClick={handleOpenCreateNew}></Button> */}
+            <Dialog open={isOpen} title="Create New Item" setOpen={handleIsOpen} actionButton={<div className='flex items-center gap-2 pt-4'><Button name="Cancel" onClick={handleClickCancelCreateNewItem}></Button>
                 <Button name="Create" onClick={handleSubmit(onSubmit)} isLoading={isPendingCreateNewItem}></Button></div>}>
                 <div className='grid'>
                     <form className='gap-4'>

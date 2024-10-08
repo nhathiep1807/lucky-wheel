@@ -63,6 +63,7 @@ function AdminBoard() {
     const [imgFile, setImgFile] = useState<File>()
     const [playerPhone, setPlayerPhone] = useState<string>('')
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [isOpenCreateNewItem, setIsOpenCreateNewItem] = useState<boolean>(false)
     const { submitNewUser, registerNewUser, formStateNewUser, resetCreateUserForm } = useCreateNewUserForm()
     const {
         submitGetUser,
@@ -222,12 +223,12 @@ function AdminBoard() {
                 </div>
             </div>
             <div className="flex px-4 pt-4 gap-2">
-                <CreateNewItem />
+                <CreateNewItem isOpen={isOpenCreateNewItem} handleIsOpen={setIsOpenCreateNewItem} />
                 <Button name="Add Player" onClick={onClickAddUser} />
             </div>
             <div className="p-4 max-h-[500px] min-h-[500px] border-b">
                 {/* <DynamicInput /> */}
-                <ListItem handleUpdateWheelItem={onClickCustomItems} />
+                <ListItem handleUpdateWheelItem={onClickCustomItems} handleOpenCreateNewItem={setIsOpenCreateNewItem}/>
             </div>
             <EditableText initialText='Please input your rule here!' />
             <Dialog open={isOpenDialog} title="Ready to win big?" setOpen={setIsOpenDialog} actionButton={<div className='flex items-center gap-2 py-2'><Button name="Access my account" onClick={onClickAddAccount}></Button>
