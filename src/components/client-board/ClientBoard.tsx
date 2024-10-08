@@ -3,6 +3,7 @@ import { useGetRankingMutation } from '@/hooks/users/useGetRanking';
 import { TypeErrorResponse } from '@/types/common';
 import { TRankingRequest } from '@/types/user';
 import React, { useContext, useEffect, useRef } from 'react'
+import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { Loader } from '../loader';
 
@@ -11,7 +12,7 @@ function getStartOfDay(date = new Date()) {
 }
 
 function ClientBoard() {
-    const rankingRef = useRef<any[]>();
+    const [rank, setRank] = useState<any[]>([])
     const { playerInfo } = useContext(GlobalContext);
     const { mutate: getRanking, isPending } = useGetRankingMutation()
 
@@ -23,14 +24,14 @@ function ClientBoard() {
         }
         getRanking(rankingBody, {
             onSuccess: (data) => {
-                rankingRef.current = data.data;
+                setRank(data.data);
             },
             onError: (error: any) => {
                 const _error: TypeErrorResponse = error;
                 toast.error(error);
             },
         })
-    }, [getRanking])
+    }, [rank, getRanking])
 
     return (
         <div className='fixed top-20 left-0'>
@@ -42,9 +43,9 @@ function ClientBoard() {
                     {playerInfo ? <h3 className="text-black">Points: <span className="font-medium">{playerInfo?.totalPoints}</span></h3> : null}
                     <div className='border my-6'></div>
                     <h2 className="font-semibold text-3xl text-yellow-500 italic underline">Ranking</h2>
-                    {rankingRef?.current ? (
+                    {rank.length > 0 ? (
                         <ol className='text-black list-decimal p-4' type='1'>
-                            {rankingRef?.current?.map((player: any, index: number) => (
+                            {rank.map((player: any, index: number) => (
                                 <li key={index}>{player.username} - {player.points}</li>
                             ))}
                         </ol>
