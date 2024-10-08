@@ -75,6 +75,11 @@ body {
   user-select: none;
 }
 
+.prize .text{
+  font-size: 38px;
+  filter:  drop-shadow(0 1px 2px #fff) drop-shadow(0 1px 1px #fff);
+}
+
 .cap {
   --cap-size: calc(var(--size) / 4);
   position: relative;
