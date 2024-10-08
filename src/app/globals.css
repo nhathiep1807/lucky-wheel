@@ -25,3 +25,28 @@ body {
     text-wrap: balance;
   }
 }
+
+.rsw-editor{
+  flex: 1
+}
+
+.rsw ul{
+  margin-left: 14px;
+}
+
+.rsw ul li {
+  list-style: disc;
+}
+
+.rsw ol li {
+  list-style: decimal;
+}
+
+.rsw h2{
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.rsw h1{
+  font-size: 2em;
+}
