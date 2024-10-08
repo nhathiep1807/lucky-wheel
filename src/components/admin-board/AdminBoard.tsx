@@ -231,7 +231,7 @@ function AdminBoard() {
         />
         <Button name="Add Player" onClick={onClickAddUser} />
       </div>
-      <div className="p-4 max-h-[500px] min-h-[500px] border-b">
+      <div className="p-4  border-b">
         {/* <DynamicInput /> */}
         <ListItem
           handleUpdateWheelItem={onClickCustomItems}
