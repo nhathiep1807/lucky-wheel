@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import "./style.css";
 import { twMerge } from "tailwind-merge";
 import { useTrackTime } from "@/hooks/useTrackTime";
@@ -8,6 +8,11 @@ import Confetti from "react-confetti";
 import useSound from "use-sound";
 import { Prize } from "@/utils/functions";
 import { Dialog } from "@headlessui/react";
+import { GlobalContext } from "@/app/context";
+import { useCountPointMutation } from "@/hooks/users/useCountPoint";
+import { TCountPointRequest } from "@/types/user";
+import { TypeErrorResponse } from "@/types/common";
+import toast from "react-hot-toast";
 
 const BaseWheel: React.FC<{ prizes: Prize[] }> = ({ prizes }) => {
   const { holdTime, isHolding, handleMouseDown, handleMouseUp } =
@@ -22,6 +27,10 @@ const BaseWheel: React.FC<{ prizes: Prize[] }> = ({ prizes }) => {
   const currentSliceRef = useRef<number>(0);
   const clickAudioRef = useRef<HTMLAudioElement>(null);
   const spinAudioRef = useRef<HTMLAudioElement>(null);
+
+  const { playerInfo } = useContext(GlobalContext);
+
+  const { mutate: countPoint } = useCountPointMutation()
 
   const [play, { stop }] = useSound("/sounds/power-up.mp3");
 
@@ -175,11 +184,27 @@ const BaseWheel: React.FC<{ prizes: Prize[] }> = ({ prizes }) => {
   };
 
   const handleTransitionEnd = () => {
+    const currentPrize = getCurrentPrize()
     setIsSpinning(false);
 
-    setLastPrize(getCurrentPrize());
+    setLastPrize(currentPrize);
 
     setRotation(rotation % 360);
+
+    const countPointBody: TCountPointRequest = {
+      userId: playerInfo?.id ?? 0,
+      itemId: currentPrize?.itemId ?? 0
+    }
+
+    countPoint(countPointBody, {
+      onSuccess: () => {
+      },
+      onError: (error: any) => {
+        const _error: TypeErrorResponse = error;
+        toast.error(error);
+      },
+    })
+
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
     }
