@@ -77,6 +77,9 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
         if (playerInfo && playerInfo !== null) {
             localStorage.setItem(PLAYER_INFO, JSON.stringify(playerInfo));
         }
+        else {
+            localStorage.removeItem(PLAYER_INFO);
+        }
     }, [playerInfo]);
 
     return (

@@ -8,6 +8,7 @@ export interface Prize {
   color: string;
   image?: string;
   angle: number;
+  itemId?: number
 }
 
 export const debounce = (func: Function, wait: number) => {
@@ -25,7 +26,8 @@ export function formatToPrizeArray(data: TCreateWheelItemResponse[] | undefined)
     text: item.name,
     color: item.color,
     image: item.img,
-    angle: +item.weight
+    angle: +item.weight,
+    itemId: item.id
   }));
   return [{
     color: '',

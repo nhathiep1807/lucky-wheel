@@ -16,6 +16,7 @@ export default function Wheel() {
     () => formatToPrizeArray(listWheelItems?.data),
     [listWheelItems]
   );
+
   return (
     <div>
       <Drawer>
