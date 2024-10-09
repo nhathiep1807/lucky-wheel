@@ -1,18 +1,23 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
-import "./style.css";
-import { twMerge } from "tailwind-merge";
 import { useTrackTime } from "@/hooks/useTrackTime";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { twMerge } from "tailwind-merge";
+import "./style.css";
 
-import EnergyRing from "./EnergyRing";
-import Confetti from "react-confetti";
-import useSound from "use-sound";
-import { Prize } from "@/utils/functions";
-import { Dialog } from "@headlessui/react";
 import { GlobalContext } from "@/app/context";
 import { useCountPointMutation } from "@/hooks/users/useCountPoint";
-import { TCountPointRequest } from "@/types/user";
 import { TypeErrorResponse } from "@/types/common";
+import { TCountPointRequest } from "@/types/user";
+import { Prize } from "@/utils/functions";
+import { Dialog } from "@headlessui/react";
+import Confetti from "react-confetti";
 import toast from "react-hot-toast";
+import useSound from "use-sound";
 
 const BaseWheel: React.FC<{ prizes: Prize[] }> = ({ prizes }) => {
   const { holdTime, isHolding, handleMouseDown, handleMouseUp } =
@@ -30,7 +35,7 @@ const BaseWheel: React.FC<{ prizes: Prize[] }> = ({ prizes }) => {
 
   const { playerInfo } = useContext(GlobalContext);
 
-  const { mutate: countPoint } = useCountPointMutation()
+  const { mutate: countPoint } = useCountPointMutation();
 
   const [play, { stop }] = useSound("/sounds/power-up.mp3");
 
@@ -123,8 +128,9 @@ const BaseWheel: React.FC<{ prizes: Prize[] }> = ({ prizes }) => {
     prizes.forEach(({ color, angle }, index) => {
       const startAngle = currentAngle;
       const endAngle = currentAngle + (angle * 360) / totalAngle;
-      gradientString += `${color} ${startAngle}deg ${endAngle}deg${index < prizes.length - 1 ? "," : ")"
-        }`;
+      gradientString += `${color} ${startAngle}deg ${endAngle}deg${
+        index < prizes.length - 1 ? "," : ")"
+      }`;
       currentAngle = endAngle;
     });
 
@@ -184,7 +190,7 @@ const BaseWheel: React.FC<{ prizes: Prize[] }> = ({ prizes }) => {
   };
 
   const handleTransitionEnd = () => {
-    const currentPrize = getCurrentPrize()
+    const currentPrize = getCurrentPrize();
     setIsSpinning(false);
 
     setLastPrize(currentPrize);
@@ -193,17 +199,16 @@ const BaseWheel: React.FC<{ prizes: Prize[] }> = ({ prizes }) => {
 
     const countPointBody: TCountPointRequest = {
       userId: playerInfo?.id ?? 0,
-      itemId: currentPrize?.itemId ?? 0
-    }
+      itemId: currentPrize?.itemId ?? 0,
+    };
 
     countPoint(countPointBody, {
-      onSuccess: () => {
-      },
+      onSuccess: () => {},
       onError: (error: any) => {
         const _error: TypeErrorResponse = error;
         toast.error(error);
       },
-    })
+    });
 
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
@@ -246,11 +251,6 @@ const BaseWheel: React.FC<{ prizes: Prize[] }> = ({ prizes }) => {
           }}
           onTransitionEnd={handleTransitionEnd}
         ></ul>
-        <EnergyRing
-          holdTime={holdTime}
-          isHolding={isHolding}
-          className="absolute top-0 left-0 w-full h-full"
-        />
 
         <div className="ticker" ref={tickerRef}></div>
         <audio src="/sounds/click.mp3" ref={clickAudioRef}></audio>
@@ -273,13 +273,13 @@ const BaseWheel: React.FC<{ prizes: Prize[] }> = ({ prizes }) => {
           disabled={isSpinning}
           className={twMerge(
             isSpinning ? "select-none" : "hover:active:scale-90",
-            "absolute group hover:scale-105 flex items-center justify-center w-10 h-10 font-bold -translate-x-1/2 -translate-y-1/2 bg-red-400 rounded-full shadow-2xl top-1/2 group md:w-16 md:h-16 lg:w-24 lg:h-24 left-1/2 transition-all duration-300"
+            "absolute group hover:scale-105 flex items-center justify-center shadow-inner w-10 h-10 font-bold bg-white -translate-x-1/2 -translate-y-1/2 rounded-full top-1/2 group md:w-16 md:h-16 lg:w-24 lg:h-24 left-1/2 transition-all duration-300"
           )}
         >
           {!isSpinning && !isHolding && (
             <span className="w-full h-full z-1 bg-red-300 rounded-full animate-ping-slow"></span>
           )}
-          <span className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 text-white select-none md:tex-xl lg:text-2xl">
+          <span className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 select-none md:tex-xl lg:text-2xl bg-clip-text text-transparent animate-text">
             {isHolding ? "Release" : "Spin"}
           </span>
         </button>
