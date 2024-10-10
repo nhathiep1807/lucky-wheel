@@ -38,10 +38,10 @@ function ClientBoard() {
   }, [rank, getRanking]);
 
   return (
-    <div className="fixed top-20 left-0">
+    <div className="fixed top-20 left-0 shadow-xl">
       <div className="relative p-[4px] min-w-[200px] w-fit rounded-md bg-gray-800 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-[#16a34a] via-[#4f46e5] to-[#8b5cf6] shadow-[0_0_0_1px_#fff,inset_0_0_0_1px_#fff,0_0_3px_#08f,0_0_5px_#08f,0_0_10px_#08f,0_0_15px_#08f]"></div>
-        <div className="relative bg-white rounded-md p-4 z-10">
+        <div className="relative rounded-md p-4 z-10 bg-neutral-100">
           {playerInfo ? null : (
             <h2 className="font-semibold text-xl text-black">Player Name</h2>
           )}
