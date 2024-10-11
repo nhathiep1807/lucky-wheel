@@ -1,3 +1,4 @@
+import { TGift } from '@/types/gift';
 import axiosClient from "@/axios-client";
 import { TBaseResponse } from "@/types/common";
 import { TCreateWheelItemResponse } from "@/types/wheelItems";
@@ -57,3 +58,7 @@ export const postRequest = <T>(url: string, data: any, isFormData = false): Prom
       throw error;
     });
 };
+
+export const FormatRedeemGiftList = (data?: TGift[]) => {
+  return data ? data.map((item) => ({ id: item.id, name: item.name, totalPoint: item.totalPoint.toString() })) : []
+}

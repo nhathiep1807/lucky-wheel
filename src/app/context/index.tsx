@@ -2,7 +2,7 @@
 import { ACCESS_TOKEN, PLAYER_INFO, USER_INFO } from "@/constants/common";
 import { TPlayer, TProfile } from "@/types/auth";
 import cookie from "@/utils/cookie";
-import { createContext, useLayoutEffect, useState } from "react";
+import { createContext, useEffect, useLayoutEffect, useState } from "react";
 
 type GlobalContextType = {
     userInfo: TProfile | null;
@@ -58,10 +58,10 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
                 setUserInfo(JSON.parse(storedUserInfo));
             }
 
-            const storePlayerInfo = localStorage.getItem(PLAYER_INFO);
-            if (storePlayerInfo) {
-                setPlayerInfo(JSON.parse(storePlayerInfo));
-            }
+            // const storePlayerInfo = localStorage.getItem(PLAYER_INFO);
+            // if (storePlayerInfo) {
+            //     setPlayerInfo(JSON.parse(storePlayerInfo));
+            // }
         } else setIsAuthenticated(false);
     }, []);
 
@@ -81,6 +81,11 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
             localStorage.removeItem(PLAYER_INFO);
         }
     }, [playerInfo]);
+
+    useEffect(() => {
+        localStorage.removeItem(PLAYER_INFO);
+    }, [])
+
 
     return (
         <GlobalContext.Provider

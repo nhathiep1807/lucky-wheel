@@ -1,5 +1,4 @@
 import axiosClient from "@/axios-client";
-import { TLoginRequest, TLoginResponse } from "@/types/auth";
 import { TBaseResponse } from "@/types/common";
 import { TCreateWheelItemResponse } from "@/types/wheelItems";
 import { postRequest } from "@/utils/functions";
@@ -20,6 +19,7 @@ const wheelItemsApi = {
   ): Promise<TBaseResponse<any>> => axiosClient.post(`/item/reorder`, data),
   deleteWheelItem: (id: string): Promise<TBaseResponse<any>> =>
     axiosClient.delete(`/item/${id}`),
+
 };
 
 export default wheelItemsApi;
