@@ -24,6 +24,7 @@ import { Input } from "../input";
 import { ListItem } from "../list-item";
 import { Select } from "../select";
 import CreateNewItem from "./CreateNewItem";
+import Redeem from "./Redeem";
 
 type Color = {
   h: number;
@@ -61,6 +62,9 @@ function AdminBoard() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isOpenCreateNewItem, setIsOpenCreateNewItem] =
     useState<boolean>(false);
+  const [isOpenRedeem, setIsOpenRedeem] = useState<boolean>(false)
+
+
   const {
     submitNewUser,
     registerNewUser,
@@ -80,7 +84,7 @@ function AdminBoard() {
   const { mutate: createNewUser, isPending: isLoadingCreateNewUser } =
     useCreateNewUserMutation();
 
-  const { userInfo, reset, setPlayerInfo } = useContext(GlobalContext);
+  const { userInfo, reset, setPlayerInfo, playerInfo } = useContext(GlobalContext);
 
   const { handleSubmit, register, formState, setValue } =
     useForm<UpdateWheelItemsForm>({
@@ -209,6 +213,14 @@ function AdminBoard() {
     setSelectedImage(imageUrl);
   };
 
+  const onClickCloseRedeem = () => {
+    setIsOpenRedeem(false)
+  }
+
+  const onOpenRedeem = () => {
+    setIsOpenRedeem(true)
+  }
+
   useEffect(() => {
     if (playerInformation && playerInformation !== null)
       setPlayerInfo(playerInformation?.data);
@@ -229,7 +241,8 @@ function AdminBoard() {
           isOpen={isOpenCreateNewItem}
           handleIsOpen={setIsOpenCreateNewItem}
         />
-        <Button name="Add Player" onClick={onClickAddUser} />
+        <Button name={playerInfo?.name ? "Switch Player" : "Add Player"} onClick={onClickAddUser} />
+        <Button name="Redeem" onClick={onOpenRedeem} disable={!playerInfo?.name}></Button>
       </div>
       <div className="p-4  border-b">
         {/* <DynamicInput /> */}
@@ -383,6 +396,7 @@ function AdminBoard() {
           </form>
         </div>
       </Dialog>
+      <Redeem isOpen={isOpenRedeem} handleOpen={setIsOpenRedeem} />
     </div>
   );
 }
