@@ -145,7 +145,8 @@ function Redeem({ isOpen, handleOpen }: Props) {
     };
 
     const handleGiftClick = (id: number, point: number) => {
-        if ((playerInfo?.totalPoints ?? 0) >= point) {
+        const playerPoint = +(playerInfo?.totalPoints ?? 0)
+        if (playerPoint >= point) {
             setSelectedGift({ id, point });
             setIsConfirmModalOpen(true);
         }
