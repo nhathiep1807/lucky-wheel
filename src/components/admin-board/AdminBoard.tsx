@@ -228,7 +228,7 @@ function AdminBoard() {
 
   return (
     <div>
-      <div className="flex justify-between items-center p-4 border-b">
+      <div className="flex justify-between items-center p-4 border-b bg-green-300">
         <h3 className="ml-8 font-bold text-xl">
           {userInfo?.name?.toUpperCase()}
         </h3>
@@ -236,7 +236,7 @@ function AdminBoard() {
           <Button name="Logout" onClick={onClickLogout} />
         </div>
       </div>
-      <div className="flex px-4 pt-4 gap-2">
+      <div className="flex px-4 pt-4 gap-2 bg-yellow-300">
         <CreateNewItem
           isOpen={isOpenCreateNewItem}
           handleIsOpen={setIsOpenCreateNewItem}
@@ -244,7 +244,7 @@ function AdminBoard() {
         <Button name={playerInfo?.name ? "Switch Player" : "Add Player"} onClick={onClickAddUser} />
         <Button name="Redeem" onClick={onOpenRedeem} disable={!playerInfo?.name}></Button>
       </div>
-      <div className="p-4  border-b">
+      <div className="p-4 border-b bg-yellow-300">
         {/* <DynamicInput /> */}
         <ListItem
           handleUpdateWheelItem={onClickCustomItems}
@@ -289,7 +289,7 @@ function AdminBoard() {
         <Input
           name="phone"
           type="text"
-          placeholder="Please input your mobilephone..."
+          placeholder="Please input your phone number!"
           register={registerGetUser}
           error={formStateGetUser.errors.phone?.message}
         />
@@ -314,14 +314,14 @@ function AdminBoard() {
             className="pb-2"
             name="name"
             type="text"
-            placeholder="Please input your name..."
+            placeholder="Please input your name"
             register={registerNewUser}
             error={formStateNewUser.errors.name?.message}
           />
           <Input
             name="phoneNumber"
             type="text"
-            placeholder="Please input your phone number..."
+            placeholder="Please input your phone number"
             register={registerNewUser}
             error={formStateNewUser.errors.phoneNumber?.message}
           />

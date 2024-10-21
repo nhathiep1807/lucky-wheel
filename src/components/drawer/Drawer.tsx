@@ -17,7 +17,7 @@ const Drawer = ({ className, children }: PropsWithChildren<DrawerProps>) => {
 
     return (
         <div
-            className={`${className} min-h-screen bg-white shadow-lg z-10 fixed right-0 top-0 ${isOpen ? "w-[400px]" : "w-10"
+            className={`${className} min-h-screen bg-yellow-300 shadow-lg z-10 fixed right-0 top-0 ${isOpen ? "w-[400px]" : "w-10"
                 } transition-width duration-300`}
         >
             <button

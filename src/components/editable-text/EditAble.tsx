@@ -42,7 +42,7 @@ const EditableText = ({ initialText }: EditAbleProps) => {
 
   return (
     <EditorProvider>
-      <div className="flex items-center space-x-2 overflow-y-auto p-4 relative">
+      <div className="flex items-center space-x-2 overflow-y-auto p-4 relative bg-yellow-300">
         {isEditing ? (
           <div className="flex gap-2 w-full">
             <Editor

@@ -40,11 +40,11 @@ function ClientBoard() {
     }, [playerInfo]);
 
     return (
-        <div className="fixed top-20 left-0 shadow-xl">
-            <div className="relative rounded-md p-4 z-10 bg-yellow-300 mb-4 shadow-xl">
+        <div className="fixed top-20 left-0">
+            <div className="relative rounded-md p-4 z-10 bg-yellow-300 mb-4 shadow-xl text-wrap">
                 {playerInfo ?
                     <h2 className="font-semibold text-xl text-black">
-                        {playerInfo?.name} - <span className="font-medium">{playerInfo?.totalPoints} points</span>
+                        {playerInfo?.name} <br /><span className="font-medium">{playerInfo?.totalPoints} points</span>
                     </h2> : (
                         <h2 className="font-semibold text-xl text-black">Player Name</h2>
                     )}
@@ -59,7 +59,7 @@ function ClientBoard() {
                         <ul className="text-black py-4">
                             {rank.map((player: any, index: number) => (
                                 <li key={index} className='flex justify-between'>
-                                    <span className="font-bold">{index+1}. {player.username}</span>
+                                    <span className="font-bold">{index + 1}. {player.username}</span>
                                     <span>{player.points}</span>
                                 </li>
                             ))}
